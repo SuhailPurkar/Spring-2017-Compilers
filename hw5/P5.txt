@@ -1,0 +1,887 @@
+===============================================================================
+===============================================================================
+HW5 Narrative
+===============================================================================
+Provided code is from 
+
+/home/wrc/public_html/cs451/s17/hw5
+
+
+In Courtesy of Mark Vo from their j--/ trees from hw3 in which my HW5 starts 
+off from as default.
+===============================================================================
+===============================================================================
+Your task here is to provide the necessary pre-analysis, analysis and code 
+generation for implementing the following additions to j--. 
+Basically, you are modifying the preanalyze(), analyze(), and codegen() 
+methods in some of the J-classes, which you provided for hw3. A good 
+resource to consult, particularly for the extra credit problem, is JVM Spec, 
+Chapter 3. And, don't forget the javap command. 
+===============================================================================
+1.Doubles. That is, all operations in j--, including casting and arrays, 
+should work for doubles where appropriate. Be sure to allocate double 
+variables properly in the stack frame. 
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+In JCastOp.java I modified the code provided Conversion method
+	
+	put(Type.INT, Type.DOUBLE, new I2D());
+    put(Type.DOUBLE, Type.INT, new D2I());
+    put(Type.DOUBLE, Type.CHAR, new D2C());
+    put(Type.CHAR, Type.DOUBLE, new C2D());
+	
+	in order to construct a table of conversions to account for doubles to 
+int conversion and vice versa from CLInstruction.java. 
+
+	put(Type.DOUBLE, Type.BOXED_DOUBLE, new Boxing(Type.DOUBLE,
+	Type.BOXED_DOUBLE));
+    put(Type.BOXED_DOUBLE, Type.DOUBLE, new UnBoxing(Type.BOXED_DOUBLE,
+    Type.DOUBLE, "doubleValue"));
+
+	in order to construct a table of conversions to account for DOUBLE and 
+BOXED_DOUBLE.
+
+In JCastOp.java I added classes 
+ ,D2I to convert Doubles to Int using 
+	public void codegen(CLEmitter output) {
+    	output.addNoArgInstruction(D2I); from CLInstruction.java
+    }
+ ,D2C to convert Doubles to Char using 
+	public void codegen(CLEmitter output) {
+    	output.addNoArgInstruction(D2I);
+    	output.addNoArgInstruction(I2C);
+    }
+	similiarly based on the initial I2C, but using narrowing the double to 
+int which then easily widens the int to a char.
+
+, I2D to convert Int to Doubles using 
+	public void codegen(CLEmitter output) {
+    	output.addNoArgInstruction(I2D);
+    }
+	similiarly based on the initial I2C from CLInstruction.java
+and C2D to convert char to double using 	
+	public void codegen(CLEmitter output) {	
+        output.addNoArgInstruction(I2D);
+    }
+	the Converter converts char to int, then int to char.
+	
+	
+	In Type.java within the descriptorFor() method, I implemented,
+	
+: cls == double.class ? "D" 
+
+to check on the cls whther the class contains a double.
+
+	In JLiteralDouble.java I modified the code provided codegen method 
+		case 0:
+            output.addNoArgInstruction(DCONST_0);
+            break;
+        case 1:
+            output.addNoArgInstruction(DCONST_0);
+            break;
+ to check for Doubles.
+	
+	 
+	
+	
+	
+	In JBinaryExpression.java, 
+within class JPlusOp() in method analyze() is 
+modified with 
+	else if (lhs.type() == Type.DOUBLE && rhs.type() == Type.DOUBLE) {
+            type = Type.DOUBLE;
+        }
+to check for doubles on both the left and right hand side of the code.
+	within  method codegen() is 
+modified with 
+	if (lhs.type()==Type.DOUBLE){
+            	output.addNoArgInstruction(DADD);	
+            }
+to check for doubles on both the left hand side of the code and output the 
+doubles otherwise int by default.
+	
+	within class JMinusOp() in method analyze() is 
+modified with 
+	if (lhs.type() == Type.DOUBLE) {
+            lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }
+to check for doubles on both the left and right hand side of the code 
+similiar to the initial provided INT.
+	within  method analyze() is 
+modified with 
+	if (lhs.type == Type.DOUBLE) {
+            output.addNoArgInstruction(DSUB);
+        } 
+to check for doubles on both the left hand side of the code and output the 
+doubles otherwise int by default.
+	
+	within class JMultiplyOp() in method analyze() is 
+modified with 
+	if (lhs.type() == Type.DOUBLE) {
+            lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }
+to check for doubles on both the left and right hand side of the code 
+similiar to the initial provided INT.
+	within  method analyze() is 
+modified with 
+	if (lhs.type == Type.DOUBLE) {
+            output.addNoArgInstruction(DMUL);
+        } 
+to check for doubles on both the left hand side of the code and output the 
+doubles otherwise int by default.
+	
+	within class JDivideOp() in method analyze() is 
+modified with 
+	if (lhs.type() == Type.DOUBLE) {
+            lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }
+to check for doubles on both the left and right hand side of the code 
+similiar to the initial provided INT.
+	within  method analyze() is 
+modified with 
+	if (lhs.type == Type.DOUBLE) {
+            output.addNoArgInstruction(DDIV);
+        } 
+to check for doubles on both the left hand side of the code and output the 
+doubles otherwise int by default.
+	
+	within class JModOp() in method analyze() is 
+modified with 
+	if (lhs.type() == Type.DOUBLE) {
+		    lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+		    rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+		    type = Type.DOUBLE;
+		}
+		else {
+		lhs.type().mustMatchExpected(line(), Type.INT);
+		rhs.type().mustMatchExpected(line(), Type.INT);
+		type = Type.INT;
+		}
+to check for doubles on both the left and right hand side of the code 
+similiar to the initial provided INT.
+	within  method analyze() is 
+modified with 
+	if (type == Type.DOUBLE) {
+            lhs.codegen(output);
+            rhs.codegen(output);
+            output.addNoArgInstruction(DREM);
+        }
+to check for doubles on both the left hand side of the code and output the 
+doubles otherwise int by default.
+	
+	
+	
+	
+	In JVariable.java, within class JVariable in method codegen() and 
+codegenStore() is modified with  
+	else if (type == Type.DOUBLE) {
+                switch (offset) {
+                case 0:
+                    output.addNoArgInstruction(DLOAD_0);
+                    break;
+                case 1:
+                    output.addNoArgInstruction(DLOAD_1);
+                    break;
+                case 2:
+                    output.addNoArgInstruction(DLOAD_2);
+                    break;
+                case 3:
+                    output.addNoArgInstruction(DLOAD_3);
+                    break;
+                default:
+                    output.addOneArgInstruction(DLOAD, offset);
+                    break;
+            }
+        }
+	to implement loading doubles value on to the stack, similiar to int.
+		
+	
+	In Context.java, within class LocalContext() in method nextOffset() is 
+modified with 
+	if (type == Type.DOUBLE){
+            int oldValue = offset;
+            offset +=2;
+            return oldValue;
+        }
+to check for doubles and the old offset value.
+
+
+
+===============================================================================
+2.The assignment operators -=, *=, /=, %=, the prefix --, and the postfix ++. 
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+In JAssignment.java, of the provided JAddAssignOp class I added 
+	
+	else if (lhs.type().equals(Type.DOUBLE)) {
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }
+		
+	within the codegen method to check for doubles for add assign.
+	and also 
+	
+	else if (lhs.type().equals(Type.DOUBLE)){
+            ((JLhs) lhs).codegenLoadLhsRvalue(output);
+            rhs.codegen(output);
+            output.addNoArgInstruction(DADD);
+        }
+	within the codegen method to check for double on the lefth hand side and
+	output double on the righthandside.
+	
+	
+	In JAssignment.java, of the provided JMinusAssignOp class I added 
+	
+	else if (lhs.type().equals(Type.DOUBLE)) {
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }
+		
+	within the codegen method to check for doubles for minus assign.
+	and also 
+	
+	else if (lhs.type().equals(Type.DOUBLE)){
+            ((JLhs) lhs).codegenLoadLhsRvalue(output);
+            rhs.codegen(output);
+            output.addNoArgInstruction(DSUB);
+        }
+	within the codegen method to check for double on the lefth hand side and
+	output double on the righthandside.
+	
+	In JAssignment.java, of the provided JMultiplyAssignOp class I added 
+	
+	else if (lhs.type().equals(Type.DOUBLE)) {
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }
+		
+	within the analyze method to check for doubles for multiply assign.
+	and also 
+	
+	 if (lhs.type().equals(Type.DOUBLE)){
+            ((JLhs) lhs).codegenLoadLhsRvalue(output);
+            rhs.codegen(output);
+            output.addNoArgInstruction(DMUL);
+        }
+        
+	
+	within the codegen method to check for double on the lefth hand side and
+	output double on the righthandside.
+	
+	
+	In JAssignment.java, of the provided JDivideAssignOp class I added 
+	
+	else if (lhs.type().equals(Type.DOUBLE)) {
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }
+		
+	within the analyze method to check for doubles for divide assign.
+	
+	
+	 if (lhs.type().equals(Type.DOUBLE)){
+            ((JLhs) lhs).codegenLoadLhsRvalue(output);
+            rhs.codegen(output);
+            output.addNoArgInstruction(DDIV);
+        }
+    within the codegen method to check for double on the lefth hand side and
+	output double on the righthandside. 
+	
+	In JComparison.java, I added class JLessThanOp based on provided 
+JGreaterThanOp
+	public JLessThanOp(int line, JExpression lhs, JExpression rhs) {
+        super(line, "<", lhs, rhs);
+    }
+
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        output
+                .addBranchInstruction(onTrue ? IF_ICMPLT : IF_ICMPGE,
+                        targetLabel);
+    }
+	To take into account of token LT in the parser, the output codegen 
+similiat to JGreaterThanOp.
+
+	In JComparison.java, I added class JGreaterEqualOp based on provided 
+JLessEqualOp
+
+	public JGreaterEqualOp(int line, JExpression lhs, JExpression rhs) {
+        super(line, ">=", lhs, rhs);
+    }
+
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        output
+                .addBranchInstruction(onTrue ? IF_ICMPLT : IF_ICMPGE,
+                        targetLabel);
+    }
+	To take into account of token LT in the parser, the output codegen 
+similiat to JLessEqualOp.
+ 
+===============================================================================
+3.Conditional expressions.
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+In JTernaryExpression.java I modified the analyze() method with
+		
+		lhs = (JExpression) lhs.analyze(context);
+		lhs.type().mustMatchExpected(line(), Type.BOOLEAN);
+		mhs = (JExpression) mhs.analyze(context);
+		rhs = (JExpression) rhs.analyze(context);
+		mhs.type().mustMatchExpected(line(), rhs.type());
+		type = mhs.type();
+        return this;
+		
+	which analyzes the context of the lefthandside, and makes sure it matches 
+the line, analyzes the context of the middle hand side, and the context of 
+the righthandside. The middle handside is checked to match the righthandside
+with the type being instantiated as the type of the middlehandside, and is 
+the type is returned.
+	
+	the codegen() is modified with 
+		
+		String elseLabel = output.createLabel();
+		String endLabel = output.createLabel();
+		lhs.codegen(output, elseLabel, false);
+		mhs.codegen(output);
+		output.addBranchInstruction(GOTO, endLabel);
+		output.addLabel(elseLabel);
+		rhs.codegen(output);
+		output.addLabel(endLabel);
+	
+	in which the lefthandside of code branches out of the for loop if the 
+condition is false. The middlehandside is outputted. The elseLabel is 
+added to the output, the code if the righthandside is then outputted.
+The endLabel is finally outputted.
+
+===============================================================================
+4.The logical or operator, ||.
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+In JBooleanBinaryExpression.java, within class JLogicalOrOp() in method 
+codegen() is modified with 
+		 if (onTrue){
+            lhs.codegen(output, targetLabel, true);
+            rhs.codegen(output, targetLabel, true);
+
+        }
+        else
+        {
+            String falseLabel=output.createLabel();
+            lhs.codegen(output, falseLabel, true);
+            rhs.codegen(output, targetLabel, false);
+            output.addLabel(falseLabel);
+        }
+to output the left and righthand side to be matched and return the 
+targetLabel as true value if true otherwise the value of the targetLabel will 
+default to being false .
+
+===============================================================================
+5.The classic for-statement.
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+In JForStatement.java, within class JForStatement() in 
+method analyze() is modified with 
+	initialize_expression.analyze(context);
+    test_expression.analyze(context);
+    test_expression.type().mustMatchExpected(line(), Type.BOOLEAN);
+    if (update_expression != null) {
+    	update_expression.analyze(context);
+    	} 	 
+    body.analyze(context);
+		 
+	based on the initial code to initialze the expression , test the 
+expression to see if the line matches a boolean. An if statement checks if 
+the expression is empty and analyzes the context if necessary. the body is 
+then updated and the context is returned.
+	in method codegen() is modified with 
+		
+		String input_test = output.createLabel();
+    	String output_test = output.createLabel();
+    	output.addLabel(input_test);
+    	test_expression.codegen(output, output_test, false);
+    	body.codegen(output);
+    	update_expression.codegen(output);
+    	output.addBranchInstruction(GOTO, input_test);
+    	output.addLabel(output_test);
+		
+	in which the code branches out of the for loop if the condition is false 
+in the test_expression, the body is then outputted, with the expression 
+then updated. The label is then outputted outside the for loop.
+
+===============================================================================
+6.The do-while statement.
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+In JDoWhileStatement.java, within class JDoWhileStatement in 
+method analyze() is modified with
+	test_expression.analyze(context);
+    test_expression.type().mustMatchExpected(line(), Type.BOOLEAN);
+    body.analyze(context);
+    return this;
+	
+ similiar to the JForStatement where the context tested expression is analyzed, 
+checked to matched the expected line, the context of the body is analyzed 
+and returned.
+	in method codegen() is modified with 
+		
+		String input_test = output.createLabel();
+    	String output_test = output.createLabel();
+    	output.addLabel(input_test);
+    	test_expression.codegen(output, output_test, false);
+    	body.codegen(output); 
+    	output.addBranchInstruction(GOTO, input_test);
+    	output.addLabel(output_test);
+		
+	in which the code branches out of the for loop if the condition is false 
+in the test_expression, the body is then outputted, with the expression 
+then updated. The label is then outputted outside the for loop.
+
+===============================================================================
+7.The break statement in loops and with labels.
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+TO DO
+
+===============================================================================
+8.[Extra Credit] The enhanced for-statement. 
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+In JEnhancedForStatement.java, within class JEnhancedForStatement() in 
+method analyze() is modified with 
+		initialize_expression.analyze(context);
+        test_expression.analyze(context);
+        body.analyze(context); 
+    	return this;
+		 
+	based on the initial code to initialze the expression and similiar to 
+JForStatement.java , test the expression and update the body return the the 
+context. 
+	in method codegen() is modified with 
+		
+		String input_test = output.createLabel();
+    	String output_test = output.createLabel();
+    	output.addLabel(input_test);
+    	initialize_expression.codegen(output);
+    	test_expression.codegen(output, output_test, false);
+    	body.codegen(output);
+    	output.addBranchInstruction(GOTO, input_test);
+    	output.addLabel(output_test);
+		
+	in which the code branches out of the for loop if the condition is false 
+in the test_expression, the body is then outputted, with the expression 
+then updated. The label is then outputted outside the for loop.
+		  
+===============================================================================
+9.[Extra Credit] Static and instance blocks. 
+===============================================================================
+Going off from the provided j-- code from 
+/home/wrc/public_html/cs451/s17/hw5
+
+In both the provided JInstanceBlock.java and JStaticBlock.java I modified 
+the analyze() method with 
+		this.context = new LocalContext(context);
+		for (int i = 0; i < statements.size(); i++) {
+			statements.set(i, (JStatement) statements.
+			get(i).analyze(this.context));
+		}
+        return this;
+		
+to analyze the context from the statements and return the context similiar 
+to JBlock.java, and also modified codegen() method with 
+		
+		for (JStatement body : statements) {
+			body.codegen(output);
+		}
+		
+		to compare the body with statement and the return the code of the 
+body similiarly to JBlock.java.
+
+
+===============================================================================
+TESTING
+===============================================================================
+jquach93@itserver6:~/cs451/hw5/j--$ ant clean
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw5/j--/build.xml
+
+clean:
+     [echo] Removing generated files and folders...
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw5/j--/lib/j--.jar
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw5/j--/lib/spim.jar
+   [delete] Deleting directory /courses/cs451/s17/wrc/jquach93/hw5/j--/classes
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+jquach93@itserver6:~/cs451/hw5/j--$ ant
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw5/j--/build.xml
+
+compile:
+     [echo] Compiling j-- source files...
+    [mkdir] Created dir: /courses/cs451/s17/wrc/jquach93/hw5/j--/classes
+    [javac] Compiling 88 source files to /courses/cs451/s17/wrc/jquach93/hw5/j--/classes
+
+compileSPIM:
+     [echo] Compiling j-- source files...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw5/j--/classes
+
+jar:
+     [echo] Bundling class files into jar files...
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw5/j--/lib/j--.jar
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw5/j--/lib/spim.jar
+
+runCompilerTests:
+     [echo] Compiling and running j-- (JVM) programs...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw5/j--/classes
+    [junit] Running junit.JMinusMinusTest
+    [junit] Testsuite: junit.JMinusMinusTest
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Division.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/DoubleTesting.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/DoubleTesting.java:4: 1.12 found where <IDENTIFIER> sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/DoubleTesting.java:6: 3.69 found where <IDENTIFIER> sought
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Modulo.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/MultiLineComments.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:4: && found where class sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:59: long found where { sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:59: Type sought where long found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:67:  0x_ is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:68: 0x123_
+    [junit]  is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:71: 0123_
+    [junit]  is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:73: 0 found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:73: Type sought where 0 found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:78: 11_. is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:82: 1.000_123_
+    [junit]  is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:96: 14E-+ is Invalid Format
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Series.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java:13: Invalid statement expression; it does not have a side-effect
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java:15: } found where ) sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java:15: Literal sought where } found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java:15: Invalid statement expression; it does not have a side-effect
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/UnaryPlus.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/Division.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/Division.java:5: Type char doesn't match type int
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:11: Unidentified input token: '#'
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:11: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:11: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: ( found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: Type sought where ( found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: [ found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: Type sought where [ found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: ) found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: Type sought where ) found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: ( found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: Type sought where ( found
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/Modulo.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/Modulo.java:6: Type char doesn't match type int
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java:19: Closing to MultiLine Comment Missing
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java:19: Literal sought where / found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java:19: Literal sought where <EOF> found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java:19: Invalid statement expression; it does not have a side-effect
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java:14: Invalid statement expression; it does not have a side-effect
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java:16: } found where ) sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java:16: Literal sought where } found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java:16: Invalid statement expression; it does not have a side-effect
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/TypeErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/TypeErrors.java:14: Type int doesn't match type boolean
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/UnaryPlus.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/UnaryPlus.java:6: Type char doesn't match type int
+    [junit]
+    [junit]
+    [junit] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.321 sec
+    [junit] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.321 sec
+    [junit] ------------- Standard Output ---------------
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Division.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/DoubleTesting.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Modulo.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/MultiLineComments.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Series.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/UnaryPlus.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/Division.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/Modulo.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/TypeErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/UnaryPlus.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] ------------- ---------------- ---------------
+    [junit] ------------- Standard Error -----------------
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/DoubleTesting.java:4: 1.12 found where <IDENTIFIER> sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/DoubleTesting.java:6: 3.69 found where <IDENTIFIER> sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:4: && found where class sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:59: long found where { sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:59: Type sought where long found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:67:  0x_ is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:68: 0x123_
+    [junit]  is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:71: 0123_
+    [junit]  is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:73: 0 found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:73: Type sought where 0 found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:78: 11_. is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:82: 1.000_123_
+    [junit]  is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/OperatorsTest.java:96: 14E-+ is Invalid Format
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java:13: Invalid statement expression; it does not have a side-effect
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java:15: } found where ) sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java:15: Literal sought where } found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/pass/Test.java:15: Invalid statement expression; it does not have a side-effect
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/Division.java:5: Type char doesn't match type int
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:11: Unidentified input token: '#'
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:11: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:11: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: ( found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: Type sought where ( found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: [ found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: Type sought where [ found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: ) found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:12: Type sought where ) found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: ( found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/LexicalErrors.java:13: Type sought where ( found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/Modulo.java:6: Type char doesn't match type int
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java:19: Closing to MultiLine Comment Missing
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java:19: Literal sought where / found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java:19: Literal sought where <EOF> found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/MultiLineComments.java:19: Invalid statement expression; it does not have a side-effect
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java:14: Invalid statement expression; it does not have a side-effect
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java:16: } found where ) sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java:16: Literal sought where } found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/SyntaxErrors.java:16: Invalid statement expression; it does not have a side-effect
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/TypeErrors.java:14: Type int doesn't match type boolean
+    [junit] /courses/cs451/s17/wrc/jquach93/hw5/j--/tests/fail/UnaryPlus.java:6: Type char doesn't match type int
+    [junit] ------------- ---------------- ---------------
+    [junit]
+    [junit] Testcase: testPass took 0.3 sec
+    [junit]     FAILED
+    [junit] null
+    [junit] junit.framework.AssertionFailedError
+    [junit]     at junit.JMinusMinusTest.testPass(JMinusMinusTest.java:52)
+    [junit]
+    [junit] Testcase: testFail took 0.016 sec
+    [junit] Test junit.JMinusMinusTest FAILED
+    [javac] Compiling 13 source files to /courses/cs451/s17/wrc/jquach93/hw5/j--/classes
+    [junit] Running junit.JMinusMinusTestRunner
+    [junit] Testsuite: junit.JMinusMinusTestRunner
+    [junit] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 sec
+    [junit] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 sec
+    [junit]
+    [junit] Testcase: testMessage took 0.001 sec
+    [junit] Testcase: testFactorial took 0 sec
+    [junit] Testcase: testCompute took 0.001 sec
+    [junit] Testcase: testComputeSum took 0.001 sec
+    [junit] Testcase: testMessage took 0.002 sec
+    [junit] Testcase: testDivide took 0.001 sec
+    [junit] Testcase: testMod took 0 sec
+    [junit] Testcase: testUnaryPlusIt took 0.001 sec
+
+BUILD SUCCESSFUL
+Total time: 4 seconds
+jquach93@itserver6:~/cs451/hw5/j--$

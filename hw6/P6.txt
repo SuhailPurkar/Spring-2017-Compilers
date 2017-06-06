@@ -1,0 +1,976 @@
+===============================================================================
+===============================================================================
+HW6 Narrative
+===============================================================================
+Provided code is from 
+
+ http://www.cs.umb.edu/j--/j--.zip
+ 
+===============================================================================
+===============================================================================
+Currently the j-- compiler performs both naive and linear scan register 
+allocation, discussed in Chapter 7. Your assignment is to implement the 
+graph coloring register allocation algorithm discussed in section 7.4.3. You 
+can start with the interval that have been built for you in 
+NRegisterAllocator. Most (if not all) of your work will be done in 
+NGraphRegisterAllocator. For the purposes of this assignment you need not 
+deal with spilling -- you can assume you have a sufficient number of 
+registers. 
+===============================================================================
+1.Clear discussion of purpose, approach.
+3.Clear discussion of development: choices available to you, choices 
+taken, and why. 
+===============================================================================
+	First things firts I used the provided pseudocode of Algorithm 7.9 on 
+page 272 in Chapter 7 of the Compilers Book.
+
+colors are registers.
+
+coalescing V1 and V2, combine them both.
+
+	
+I made stub methods to initially start off the foundation of building 
+NGraphRegisterAllocator.java such as buildInterferenceGraph(), 
+coalesceRegistersSucessful(), buildAdjacencyLists(), computeSpillCosts(), 
+primeGraph(), and generateSpillCode(), and the boolean 
+registerallocSucessfully.
+
+
+The purpose of buildInterferenceGraph to check if both registers virtual 
+registers/nodes are active simultaneously. If both are active then they are 
+true. otherwise it is false. It is to determine which nodes connect to what. 
+for loop is to check for current node with every subsequent node such as V32 
+checks. V32 is kept track of at the start while the 2nd for loop starts. The 
+-2nd for loop checks subsequent nodes with the current node's ranges .
+ For instance V33 checks V32.
+
+-ranges is an  NInterval variable that keeps track of when the node is 
+active or liveness. 
+
+-ranges is an arraylist of NRange which is inside 
+
+NInterval. -rangeOverlaps is an method inside nrange, a boolean that 
+compares 2 ranges and returns true if botth are live ,otherwise false i.e. 
+
+The 3rd and 4th -for loops are the liveness for nodes. we use rangeOverlaps.
+
+active.get(0) gets you NInterval at index 0.
+active.get(0).ranges will return arraylist of when 'active' is active.
+active.get(0).ranges(0).get(0) will return first interval that is active.
+active.get(0).ranges(0).get(0).rangeOverlaps(active.get(1).ranges.get(0)) 
+v32's first ranges is compared to v33's first range.   
+
+The method addSortedToUnhandled() is to add the given interval onto the 
+unhandled list, and maintaining an order based on the first range start of 
+the NIntervals. 
+
+The method buildAdjacencyLists() is meant to make a list of vectors computed 
+from adjacency matrix.
+
+
+===============================================================================
+2.Clear discussion of what you did, didn't do, and why.
+===============================================================================
+
+Startign off initially I used code from NNaiveRegisterAllocator.java to 
+assign the stack offset virtual registers mapped to the physical registers 
+in and the same is with allocating the fixed registers (a0, ..., a3 and v0) 
+that were active during generation phase to appropriate intervals for the 
+control flow graph within the allocation() method NGraphRegisterAllocator as 
+suggested by Professor Campbell.
+
+The method addSortedToUnhandled() was borrowed from 
+NLinearRegisterAllocator.java to check whether the unhandeled list is empty 
+and adds a new Interval otherwise it adds the non empty unhandeled list.
+ 
+
+
+
+
+===============================================================================
+5.Implementation of Register Allocation Alg. 
+===============================================================================
+ideally......
+//HW6 Added Algorithm/Pseusdocode
+  	//registerallocSucessfully -> false
+  	//repeat
+  	//	repeat
+  	//		buildIntervals()
+  	//		buildInterferenceGraph()
+  	//	until coalesceRegistersSucessful()
+  	//	buildAdjacencyLists()
+  	//	computeSpillCosts()
+  	//	pruneGraph()
+  	//	registerallocSucessfully <- assignRegisterSucessful()
+  	//	if registerallocfully then
+  	//		generateSpillCode()
+  	//	end if
+  	//until registerallocSucessfully
+
+
+===============================================================================
+4.Clear discussion of testing: coverage, tests chosen, test results. 
+TESTING
+===============================================================================
+At the moment of testign the code my code isn't fully functional (as 
+indicated by the nulls being printed out). But this is what I have at the 
+moment, the testign is invoked in this manner to test 
+NGraphRegisterAllocator.java. Testing both Formals.java and Factorial.java 
+as being suggested.
+ 
+jquach93@itserver6:~/cs451/hw6$ bash bin/j-- -s graph -r 18 tests/spim/Formals.java
+<init> ()V
+  ========== TUPLES ==========
+
+  B0
+
+  B1
+  0: aload_0
+  1: invokespecial   0   8
+  4: return
+
+  ========== HIR ==========
+
+  B0 succ: B1
+  Locals:
+
+  B1 [0, 4] dom: B0 pred: B0
+  Locals:
+  V1: invokespecial java/lang/Object.<init>( )
+  2: return
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: INVOKESPECIAL java/lang/Object.<init>( )
+  5: RETURN
+
+  ========== INTERVALS ==========
+
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: INVOKESPECIAL java/lang/Object.<init>( )
+  5: RETURN
+
+sum (IIIIII)I
+  ========== TUPLES ==========
+
+  B0
+
+  B1
+  0: bipush   7
+  2: istore   6
+  4: iload_0
+  5: iload_1
+  6: iadd
+  7: iload_2
+  8: iadd
+  9: iload_3
+  10: iadd
+  11: iload   4
+  13: iadd
+  14: iload   5
+  16: iadd
+  17: iload   6
+  19: iadd
+  20: ireturn
+
+  ========== HIR ==========
+
+  B0 succ: B1
+  Locals: I0 I1 I2 I3 I4 I5
+  I0: LDLOC 0
+  I1: LDLOC 1
+  I2: LDLOC 2
+  I3: LDLOC 3
+  I4: LDLOC 4
+  I5: LDLOC 5
+
+  B1 [0, 20] dom: B0 pred: B0
+  Locals: I0 I1 I2 I3 I4 I5 I7
+  I7: 7
+  I8: I0 + I1
+  I9: I8 + I2
+  I10: I9 + I3
+  I11: I10 + I4
+  I12: I11 + I5
+  I13: I12 + I7
+  I14: ireturn I13
+
+  ========== LIR ==========
+
+  B0
+  0: LDLOC 4 [V32|I]
+  5: LDLOC 5 [V33|I]
+
+  B1
+  10: LDC [7] [V34|I]
+  15: ADD $a0 $a1 [V35|I]
+  20: ADD [V35|I] $a2 [V36|I]
+  25: ADD [V36|I] $a3 [V37|I]
+  30: ADD [V37|I] [V32|I] [V38|I]
+  35: ADD [V38|I] [V33|I] [V39|I]
+  40: ADD [V39|I] [V34|I] [V40|I]
+  45: MOVE [V40|I] $v0
+  50: RETURN $v0
+
+  ========== INTERVALS ==========
+
+  v0: [45, 50] -> v0
+  a0: [0, 15] -> a0
+  a1: [0, 15] -> a1
+  a2: [0, 20] -> a2
+  a3: [0, 25] -> a3
+  V32: [0, 30] -> None [frame:1]
+  V33: [5, 35] -> None [frame:2]
+  V34: [10, 40] -> None
+  V35: [15, 20] -> None
+  V36: [20, 25] -> None
+  V37: [25, 30] -> None
+  V38: [30, 35] -> None
+  V39: [35, 40] -> None
+  V40: [40, 45] -> None
+
+  ========== LIR ==========
+
+  B0
+  0: LDLOC 4 [V32|I]
+  5: LDLOC 5 [V33|I]
+
+  B1
+  10: LDC [7] null
+  15: ADD $a0 $a1 null
+  20: ADD null $a2 null
+  25: ADD null $a3 null
+  30: ADD null null null
+  35: ADD null null null
+  40: ADD null null null
+  45: MOVE null $v0
+  50: RETURN $v0
+
+product (IIIIII)I
+  ========== TUPLES ==========
+
+  B0
+
+  B1
+  0: bipush   7
+  2: istore   6
+  4: iload_0
+  5: iload_1
+  6: imul
+  7: iload_2
+  8: imul
+  9: iload_3
+  10: imul
+  11: iload   4
+  13: imul
+  14: iload   5
+  16: imul
+  17: iload   6
+  19: imul
+  20: ireturn
+
+  ========== HIR ==========
+
+  B0 succ: B1
+  Locals: I0 I1 I2 I3 I4 I5
+  I0: LDLOC 0
+  I1: LDLOC 1
+  I2: LDLOC 2
+  I3: LDLOC 3
+  I4: LDLOC 4
+  I5: LDLOC 5
+
+  B1 [0, 20] dom: B0 pred: B0
+  Locals: I0 I1 I2 I3 I4 I5 I7
+  I7: 7
+  I8: I0 * I1
+  I9: I8 * I2
+  I10: I9 * I3
+  I11: I10 * I4
+  I12: I11 * I5
+  I13: I12 * I7
+  I14: ireturn I13
+
+  ========== LIR ==========
+
+  B0
+  0: LDLOC 4 [V32|I]
+  5: LDLOC 5 [V33|I]
+
+  B1
+  10: LDC [7] [V34|I]
+  15: MUL $a0 $a1 [V35|I]
+  20: MUL [V35|I] $a2 [V36|I]
+  25: MUL [V36|I] $a3 [V37|I]
+  30: MUL [V37|I] [V32|I] [V38|I]
+  35: MUL [V38|I] [V33|I] [V39|I]
+  40: MUL [V39|I] [V34|I] [V40|I]
+  45: MOVE [V40|I] $v0
+  50: RETURN $v0
+
+  ========== INTERVALS ==========
+
+  v0: [45, 50] -> v0
+  a0: [0, 15] -> a0
+  a1: [0, 15] -> a1
+  a2: [0, 20] -> a2
+  a3: [0, 25] -> a3
+  V32: [0, 30] -> None [frame:1]
+  V33: [5, 35] -> None [frame:2]
+  V34: [10, 40] -> None
+  V35: [15, 20] -> None
+  V36: [20, 25] -> None
+  V37: [25, 30] -> None
+  V38: [30, 35] -> None
+  V39: [35, 40] -> None
+  V40: [40, 45] -> None
+
+  ========== LIR ==========
+
+  B0
+  0: LDLOC 4 [V32|I]
+  5: LDLOC 5 [V33|I]
+
+  B1
+  10: LDC [7] null
+  15: MUL $a0 $a1 null
+  20: MUL null $a2 null
+  25: MUL null $a3 null
+  30: MUL null null null
+  35: MUL null null null
+  40: MUL null null null
+  45: MOVE null $v0
+  50: RETURN $v0
+
+main ([Ljava/lang/String;)V
+  ========== TUPLES ==========
+
+  B0
+
+  B1
+  0: iconst_1
+  1: iconst_2
+  2: iconst_3
+  3: iconst_4
+  4: iconst_5
+  5: bipush   6
+  7: invokestatic   0   16
+  10: invokestatic   0   22
+  13: bipush   10
+  15: invokestatic   0   26
+  18: iconst_1
+  19: iconst_2
+  20: iconst_3
+  21: iconst_4
+  22: iconst_5
+  23: bipush   6
+  25: invokestatic   0   28
+  28: invokestatic   0   22
+  31: bipush   10
+  33: invokestatic   0   26
+  36: return
+
+  ========== HIR ==========
+
+  B0 succ: B1
+  Locals: L0
+  L0: LDLOC 0
+
+  B1 [0, 36] dom: B0 pred: B0
+  Locals: L0
+  I1: 1
+  I2: 2
+  I3: 3
+  I4: 4
+  I5: 5
+  I6: 6
+  I7: invokestatic Formals.sum( I1 I2 I3 I4 I5 I6 )
+  V8: invokestatic spim/SPIM.printInt( I7 )
+  I9: 10
+  V10: invokestatic spim/SPIM.printChar( I9 )
+  I11: 1
+  I12: 2
+  I13: 3
+  I14: 4
+  I15: 5
+  I16: 6
+  I17: invokestatic Formals.product( I11 I12 I13 I14 I15 I16 )
+  V18: invokestatic spim/SPIM.printInt( I17 )
+  I19: 10
+  V20: invokestatic spim/SPIM.printChar( I19 )
+  21: return
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: LDC [1] [V32|I]
+  5: LDC [2] [V33|I]
+  10: LDC [3] [V34|I]
+  15: LDC [4] [V35|I]
+  20: LDC [5] [V36|I]
+  25: LDC [6] [V37|I]
+  30: MOVE $a0 [V38|I]
+  35: MOVE [V32|I] $a0
+  40: MOVE $a1 [V39|I]
+  45: MOVE [V33|I] $a1
+  50: MOVE $a2 [V40|I]
+  55: MOVE [V34|I] $a2
+  60: MOVE $a3 [V41|I]
+  65: MOVE [V35|I] $a3
+  70: STORE [V36|I] [stack:0]
+  75: STORE [V37|I] [stack:1]
+  80: INVOKESTATIC $v0 = Formals.sum( $a0 $a1 $a2 $a3 [V36|I] [V37|I] )
+  85: MOVE $v0 [V42|I]
+  90: MOVE [V38|I] $a0
+  95: MOVE [V39|I] $a1
+  100: MOVE [V40|I] $a2
+  105: MOVE [V41|I] $a3
+  110: MOVE $a0 [V43|I]
+  115: MOVE [V42|I] $a0
+  120: INVOKESTATIC spim/SPIM.printInt( $a0 )
+  125: MOVE [V43|I] $a0
+  130: LDC [10] [V44|I]
+  135: MOVE $a0 [V45|I]
+  140: MOVE [V44|I] $a0
+  145: INVOKESTATIC spim/SPIM.printChar( $a0 )
+  150: MOVE [V45|I] $a0
+  155: LDC [1] [V46|I]
+  160: LDC [2] [V47|I]
+  165: LDC [3] [V48|I]
+  170: LDC [4] [V49|I]
+  175: LDC [5] [V50|I]
+  180: LDC [6] [V51|I]
+  185: MOVE $a0 [V52|I]
+  190: MOVE [V46|I] $a0
+  195: MOVE $a1 [V53|I]
+  200: MOVE [V47|I] $a1
+  205: MOVE $a2 [V54|I]
+  210: MOVE [V48|I] $a2
+  215: MOVE $a3 [V55|I]
+  220: MOVE [V49|I] $a3
+  225: STORE [V50|I] [stack:0]
+  230: STORE [V51|I] [stack:1]
+  235: INVOKESTATIC $v0 = Formals.product( $a0 $a1 $a2 $a3 [V50|I] [V51|I] )
+  240: MOVE $v0 [V56|I]
+  245: MOVE [V52|I] $a0
+  250: MOVE [V53|I] $a1
+  255: MOVE [V54|I] $a2
+  260: MOVE [V55|I] $a3
+  265: MOVE $a0 [V57|I]
+  270: MOVE [V56|I] $a0
+  275: INVOKESTATIC spim/SPIM.printInt( $a0 )
+  280: MOVE [V57|I] $a0
+  285: LDC [10] [V58|I]
+  290: MOVE $a0 [V59|I]
+  295: MOVE [V58|I] $a0
+  300: INVOKESTATIC spim/SPIM.printChar( $a0 )
+  305: MOVE [V59|I] $a0
+  310: RETURN
+
+  ========== INTERVALS ==========
+
+  v0: [80, 85] [235, 240] -> v0
+  a0: [0, 80] [90, 235] [245, 300] -> a0
+  a1: [0, 80] [95, 235] -> a1
+  a2: [0, 80] [100, 235] -> a2
+  a3: [0, 80] [105, 235] -> a3
+  V32: [0, 35] -> None
+  V33: [5, 45] -> None
+  V34: [10, 55] -> None
+  V35: [15, 65] -> None
+  V36: [20, 80] -> None
+  V37: [25, 80] -> None
+  V38: [30, 90] -> None
+  V39: [40, 95] -> None
+  V40: [50, 100] -> None
+  V41: [60, 105] -> None
+  V42: [85, 115] -> None
+  V43: [110, 125] -> None
+  V44: [130, 140] -> None
+  V45: [135, 150] -> None
+  V46: [155, 190] -> None
+  V47: [160, 200] -> None
+  V48: [165, 210] -> None
+  V49: [170, 220] -> None
+  V50: [175, 235] -> None
+  V51: [180, 235] -> None
+  V52: [185, 245] -> None
+  V53: [195, 250] -> None
+  V54: [205, 255] -> None
+  V55: [215, 260] -> None
+  V56: [240, 270] -> None
+  V57: [265, 280] -> None
+  V58: [285, 295] -> None
+  V59: [290, 305] -> None
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: LDC [1] null
+  5: LDC [2] null
+  10: LDC [3] null
+  15: LDC [4] null
+  20: LDC [5] null
+  25: LDC [6] null
+  30: MOVE $a0 null
+  35: MOVE null $a0
+  40: MOVE $a1 null
+  45: MOVE null $a1
+  50: MOVE $a2 null
+  55: MOVE null $a2
+  60: MOVE $a3 null
+  65: MOVE null $a3
+  70: STORE null [stack:0]
+  75: STORE null [stack:1]
+  80: INVOKESTATIC $v0 = Formals.sum( $a0 $a1 $a2 $a3 null null )
+  85: MOVE $v0 null
+  90: MOVE null $a0
+  95: MOVE null $a1
+  100: MOVE null $a2
+  105: MOVE null $a3
+  110: MOVE $a0 null
+  115: MOVE null $a0
+  120: INVOKESTATIC spim/SPIM.printInt( $a0 )
+  125: MOVE null $a0
+  130: LDC [10] null
+  135: MOVE $a0 null
+  140: MOVE null $a0
+  145: INVOKESTATIC spim/SPIM.printChar( $a0 )
+  150: MOVE null $a0
+  155: LDC [1] null
+  160: LDC [2] null
+  165: LDC [3] null
+  170: LDC [4] null
+  175: LDC [5] null
+  180: LDC [6] null
+  185: MOVE $a0 null
+  190: MOVE null $a0
+  195: MOVE $a1 null
+  200: MOVE null $a1
+  205: MOVE $a2 null
+  210: MOVE null $a2
+  215: MOVE $a3 null
+  220: MOVE null $a3
+  225: STORE null [stack:0]
+  230: STORE null [stack:1]
+  235: INVOKESTATIC $v0 = Formals.product( $a0 $a1 $a2 $a3 null null )
+  240: MOVE $v0 null
+  245: MOVE null $a0
+  250: MOVE null $a1
+  255: MOVE null $a2
+  260: MOVE null $a3
+  265: MOVE $a0 null
+  270: MOVE null $a0
+  275: INVOKESTATIC spim/SPIM.printInt( $a0 )
+  280: MOVE null $a0
+ 
+ 
+jquach93@itserver6:~/cs451/hw6$ bash bin/j-- -s graph -r 18 tests/spim/Factorial.java
+<init> ()V
+  ========== TUPLES ==========
+
+  B0
+
+  B1
+  0: aload_0
+  1: invokespecial   0   8
+  4: return
+
+  ========== HIR ==========
+
+  B0 succ: B1
+  Locals:
+
+  B1 [0, 4] dom: B0 pred: B0
+  Locals:
+  V1: invokespecial java/lang/Object.<init>( )
+  2: return
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: INVOKESPECIAL java/lang/Object.<init>( )
+  5: RETURN
+
+  ========== INTERVALS ==========
+
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: INVOKESPECIAL java/lang/Object.<init>( )
+  5: RETURN
+
+computeRec (I)I
+  ========== TUPLES ==========
+
+  B0
+
+  B1
+  0: iload_0
+  1: iconst_0
+  2: if_icmpgt   0   8
+
+  B2
+  5: iconst_1
+  6: ireturn
+
+  B3
+  7: goto   0   12
+
+  B4
+  10: iload_0
+  11: iload_0
+  12: iconst_1
+  13: isub
+  14: invokestatic   0   13
+  17: imul
+  18: ireturn
+
+  B5
+  19: nop
+
+  ========== HIR ==========
+
+  B0 succ: B1
+  Locals: I0
+  I0: LDLOC 0
+
+  B1 [0, 2] dom: B0 pred: B0  succ: B2 B4
+  Locals: I0
+  I1: 0
+  2: if I0 > I1 then B4 else B2
+
+  B2 [5, 6] dom: B1 pred: B1
+  Locals: I0
+  I3: 1
+  I4: ireturn I3
+
+  B4 [10, 18] dom: B1 pred: B1
+  Locals: I0
+  I5: 1
+  I6: I0 - I5
+  I7: invokestatic Factorial.computeRec( I6 )
+  I8: I0 * I7
+  I9: ireturn I8
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: LDC [0] [V32|I]
+  5: BRANCH [GT] $a0 [V32|I] B4
+
+  B2
+  10: LDC [1] [V33|I]
+  15: MOVE [V33|I] $v0
+  20: RETURN $v0
+
+  B4
+  25: LDC [1] [V34|I]
+  30: SUB $a0 [V34|I] [V35|I]
+  35: MOVE $a0 [V36|I]
+  40: MOVE [V35|I] $a0
+  45: INVOKESTATIC $v0 = Factorial.computeRec( $a0 )
+  50: MOVE $v0 [V37|I]
+  55: MOVE [V36|I] $a0
+  60: MUL $a0 [V37|I] [V38|I]
+  65: MOVE [V38|I] $v0
+  70: RETURN $v0
+
+  ========== INTERVALS ==========
+
+  v0: [15, 20] [45, 50] [65, 70] -> v0
+  a0: [0, 5] [25, 45] [55, 60] -> a0
+  V32: [0, 5] -> None
+  V33: [10, 15] -> None
+  V34: [25, 30] -> None
+  V35: [30, 40] -> None
+  V36: [35, 55] -> None
+  V37: [50, 60] -> None
+  V38: [60, 65] -> None
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: LDC [0] null
+  5: BRANCH [GT] $a0 null B4
+
+  B2
+  10: LDC [1] null
+  15: MOVE null $v0
+  20: RETURN $v0
+
+  B4
+  25: LDC [1] null
+  30: SUB $a0 null null
+  35: MOVE $a0 null
+  40: MOVE null $a0
+  45: INVOKESTATIC $v0 = Factorial.computeRec( $a0 )
+  50: MOVE $v0 null
+  55: MOVE null $a0
+  60: MUL $a0 null null
+  65: MOVE null $v0
+  70: RETURN $v0
+
+computeIter (I)I
+  ========== TUPLES ==========
+
+  B0
+
+  B1
+  0: iconst_1
+  1: istore_1
+
+  B2
+  2: iload_0
+  3: iconst_0
+  4: if_icmple   0   13
+
+  B3
+  7: iload_1
+  8: iload_0
+  9: iinc   0   255
+  12: imul
+  13: istore_1
+  14: goto   255   244
+
+  B4
+  17: iload_1
+  18: ireturn
+
+  ========== HIR ==========
+
+  B0 succ: B1
+  Locals: I0
+  I0: LDLOC 0
+
+  B1 [0, 1] dom: B0 pred: B0  succ: B2
+  Locals: I0 I2
+  I2: 1
+
+  B2 [LH] [2, 4] dom: B1 pred: B1 B3  succ: B3 B4
+  Locals: I3 I4
+  I3: [ I0 I8 ]
+  I4: [ I2 I9 ]
+  I5: 0
+  6: if I3 <= I5 then B4 else B3
+
+  B3 [LT] [7, 14] dom: B2 pred: B2  succ: B2
+  Locals: I8 I9
+  I7: -1
+  I8: I3 + I7
+  I9: I4 * I3
+  10: goto B2
+
+  B4 [17, 18] dom: B2 pred: B2
+  Locals: I3 I4
+  I11: ireturn I4
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: LDC [1] [V32|I]
+  5: MOVE $a0 [V33|I]
+  10: MOVE [V32|I] [V34|I]
+
+  B2
+  15: LDC [0] [V35|I]
+  20: BRANCH [LE] [V33|I] [V35|I] B4
+
+  B3
+  25: LDC [-1] [V36|I]
+  30: ADD [V33|I] [V36|I] [V37|I]
+  35: MUL [V34|I] [V33|I] [V38|I]
+  40: MOVE [V38|I] [V34|I]
+  45: MOVE [V37|I] [V33|I]
+  50: BRANCH B2
+
+  B4
+  55: MOVE [V34|I] $v0
+  60: RETURN $v0
+
+  ========== INTERVALS ==========
+
+  v0: [55, 60] -> v0
+  a0: [0, 5] -> a0
+  V32: [0, 10] -> None
+  V33: [5, 35] [45, 50] -> None
+  V34: [10, 55] -> None
+  V35: [15, 20] -> None
+  V36: [25, 30] -> None
+  V37: [30, 45] -> None
+  V38: [35, 40] -> None
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: LDC [1] null
+  5: MOVE $a0 null
+  10: MOVE null null
+
+  B2
+  15: LDC [0] null
+  20: BRANCH [LE] null null B4
+
+  B3
+  25: LDC [-1] null
+  30: ADD null null null
+  35: MUL null null null
+  40: MOVE null null
+  45: MOVE null null
+  50: BRANCH B2
+
+  B4
+  55: MOVE null $v0
+  60: RETURN $v0
+
+main ([Ljava/lang/String;)V
+  ========== TUPLES ==========
+
+  B0
+
+  B1
+  0: bipush   7
+  2: istore_1
+  3: iload_1
+  4: invokestatic   0   13
+  7: invokestatic   0   22
+  10: bipush   10
+  12: invokestatic   0   26
+  15: iload_1
+  16: invokestatic   0   28
+  19: invokestatic   0   22
+  22: bipush   10
+  24: invokestatic   0   26
+  27: return
+
+  ========== HIR ==========
+
+  B0 succ: B1
+  Locals: L0
+  L0: LDLOC 0
+
+  B1 [0, 27] dom: B0 pred: B0
+  Locals: L0 I2
+  I2: 7
+  I3: invokestatic Factorial.computeRec( I2 )
+  V4: invokestatic spim/SPIM.printInt( I3 )
+  I5: 10
+  V6: invokestatic spim/SPIM.printChar( I5 )
+  I7: invokestatic Factorial.computeIter( I2 )
+  V8: invokestatic spim/SPIM.printInt( I7 )
+  I9: 10
+  V10: invokestatic spim/SPIM.printChar( I9 )
+  11: return
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: LDC [7] [V32|I]
+  5: MOVE $a0 [V33|I]
+  10: MOVE [V32|I] $a0
+  15: INVOKESTATIC $v0 = Factorial.computeRec( $a0 )
+  20: MOVE $v0 [V34|I]
+  25: MOVE [V33|I] $a0
+  30: MOVE $a0 [V35|I]
+  35: MOVE [V34|I] $a0
+  40: INVOKESTATIC spim/SPIM.printInt( $a0 )
+  45: MOVE [V35|I] $a0
+  50: LDC [10] [V36|I]
+  55: MOVE $a0 [V37|I]
+  60: MOVE [V36|I] $a0
+  65: INVOKESTATIC spim/SPIM.printChar( $a0 )
+  70: MOVE [V37|I] $a0
+  75: MOVE $a0 [V38|I]
+  80: MOVE [V32|I] $a0
+  85: INVOKESTATIC $v0 = Factorial.computeIter( $a0 )
+  90: MOVE $v0 [V39|I]
+  95: MOVE [V38|I] $a0
+  100: MOVE $a0 [V40|I]
+  105: MOVE [V39|I] $a0
+  110: INVOKESTATIC spim/SPIM.printInt( $a0 )
+  115: MOVE [V40|I] $a0
+  120: LDC [10] [V41|I]
+  125: MOVE $a0 [V42|I]
+  130: MOVE [V41|I] $a0
+  135: INVOKESTATIC spim/SPIM.printChar( $a0 )
+  140: MOVE [V42|I] $a0
+  145: RETURN
+
+  ========== INTERVALS ==========
+
+  v0: [15, 20] [85, 90] -> v0
+  a0: [0, 15] [25, 85] [95, 135] -> a0
+  V32: [0, 80] -> None
+  V33: [5, 25] -> None
+  V34: [20, 35] -> None
+  V35: [30, 45] -> None
+  V36: [50, 60] -> None
+  V37: [55, 70] -> None
+  V38: [75, 95] -> None
+  V39: [90, 105] -> None
+  V40: [100, 115] -> None
+  V41: [120, 130] -> None
+  V42: [125, 140] -> None
+
+  ========== LIR ==========
+
+  B0
+
+  B1
+  0: LDC [7] null
+  5: MOVE $a0 null
+  10: MOVE null $a0
+  15: INVOKESTATIC $v0 = Factorial.computeRec( $a0 )
+  20: MOVE $v0 null
+  25: MOVE null $a0
+  30: MOVE $a0 null
+  35: MOVE null $a0
+  40: INVOKESTATIC spim/SPIM.printInt( $a0 )
+  45: MOVE null $a0
+  50: LDC [10] null
+  55: MOVE $a0 null
+  60: MOVE null $a0
+  65: INVOKESTATIC spim/SPIM.printChar( $a0 )
+  70: MOVE null $a0
+  75: MOVE $a0 null
+  80: MOVE null $a0
+  85: INVOKESTATIC $v0 = Factorial.computeIter( $a0 )
+  90: MOVE $v0 null
+  95: MOVE null $a0
+  100: MOVE $a0 null
+  105: MOVE null $a0
+  110: INVOKESTATIC spim/SPIM.printInt( $a0 )
+  115: MOVE null $a0
+  120: LDC [10] null
+  125: MOVE $a0 null
+  130: MOVE null $a0
+  135: INVOKESTATIC spim/SPIM.printChar( $a0 )
+  140: MOVE null $a0
+  145: RETURN

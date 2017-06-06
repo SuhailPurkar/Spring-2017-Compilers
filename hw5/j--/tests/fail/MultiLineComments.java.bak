@@ -1,0 +1,22 @@
+//Mark Vo
+//cs451
+//HW2
+package pass;
+//import java.lang.System;
+
+public class MultiLineComments{
+	
+	public  static void main(String[] args) {
+		  
+    	System.out.println("Before Comment"); 
+		/*Hello this is a multiline comment, 1_-?><~`'""*/
+		
+		/*
+		Now a comment in multiple lines
+		*/
+		
+		/* comment with in a comment //   /* */
+		System.out.println("After Comment"); 
+		
+    }
+}

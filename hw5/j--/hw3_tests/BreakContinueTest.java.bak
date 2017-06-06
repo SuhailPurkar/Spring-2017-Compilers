@@ -1,0 +1,15 @@
+public class BreakContinueTest{
+
+	public static void main(String [] args){
+		label1:
+			System.out.println("");
+		continue;
+		break;
+		int i = 0;
+		while(i < 3){
+			i++;
+			break;
+		}
+	}
+
+}

@@ -1,0 +1,34 @@
+
+CS451/651, Spring 2017, Bill Campbell           Name _________________________
+Gradesheet for hw6 (Register Allocation as Graph Coloring)
+
+Narrative
+
+    Clear discussion of purpose, approach.                  	(/10)   ______
+
+
+    Clear discussion of what you did, didn't do,            	(/10)   ______
+                and why
+
+    Clear discussion of development: choices
+       available to you, choices taken, and why.               	(/10)   ______
+
+    Clear discussion of testing: coverage, tests chosen,
+       test results.                                           	(/10)   ______
+
+Program Operation
+
+    Implementation of Register Allocation Alg.                	(/40)   ______
+
+
+Testing
+
+    Show (selected) results (good and/or bad)		        (/10)   _____
+
+
+    Proper coverage.                                            (/10)   _____
+
+
+Total                                                          (/100) ______
+
+

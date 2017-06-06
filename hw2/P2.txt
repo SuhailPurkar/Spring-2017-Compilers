@@ -1,0 +1,397 @@
+===============================================================================
+===============================================================================
+HW2 Narrative
+===============================================================================
+Provided code is from http://www.cs.umb.edu/j--/j--.zip 
+===============================================================================
+
+Here you will have to modify the Scanner so as to be able to recognize 
+almost all Java tokens. The purpose of this part is to get you familiar with 
+lexical analysis and is the first step toward implementing additional Java 
+functionality. 
+===============================================================================
+Modify the Scanner to scan the following tokens.
+===============================================================================
+1.     Scan (and ignore) multi-line comments.
+===============================================================================
+	In Scanner.java within the getNextToken(), in the while statement that 
+checks for white space, and within the first 'if(ch == '/){...}'. An 
+else if statement is incorporated to check for '*' as that indicates the 
+begging of a multiline comment that begins with '/*'. a nested while 
+statement is check if the character isn't end of file and proceeds to 
+the next character. Within that while statement is another nested while 
+statement that checks for '*' for the first part of the '*/", and 
+procceds to next character. Finally an nested if statement checks for 
+the '/' in the '*/' which will break indicating the end of a multiline 
+comment.
+===============================================================================
+2.     All Java operators.
+===============================================================================
+	In TokenInfo.java I added tokens to TokenKind to register respective 
+tokens of operators in j-- based on 
+https://docs.oracle.com/javase/tutorial/java/nutsandbolts/operators.html 
+such as 
+MINUS_ASSIGN("-="), STAR_ASSIGN("*="),DIV_ASSIGN("/="), MOD_ASSIGN("%="), 
+GE(">="),LT("<"), AND_ASSIGN("&="), XOR_ASSIGN("^="), 
+OR_ASSIGN("|="),RS(">>"), LS("<<"), ZRS(">>>"),RS_ASSIGN(">>="), 
+ZRS_ASSIGN(">>>="), LS_ASSIGN("<<="), COLON(":"),COMPLEMENT("~"), 
+QUESTION("?"), LOR("||"),and NOT_EQUAL("!=").
+	
+	In Scanner.java within the getNextToken(), in the switch statement that 
+checks the character for various symbols. 
+For the case of '%', I added an if statement that checks for '=' which will 
+proceed to the next char and return an TokenInfo(MOD_ASSIGN, line) to check 
+for MOD_ASSIGN or '%=', otherwise it will just return a TokenInfo of MOD by 
+default. 
+
+For the case of '=', I added an if statement that checks for '=' which will 
+proceed to the next char and return an TokenInfo(NOT_EQUAL, line) to check 
+for NOT_EQUAL or '!=', otherwise it will just return a TokenInfo of LNOT by 
+default. This is very much similiar to the available case statements for MOD.
+
+For the case of '-', I added an else if statement that checks for '=' which 
+will proceed to the next char and return an TokenInfo(MINUS_ASSIGN, line) to 
+check for MINUS_ASSIGN or '-=', otherwise it will just return a TokenInfo of 
+MINUS by default. This is very much similiar to the available case 
+statements for PLUS. 
+
+For the case of '&', I added an if statement that checks for '=' which will 
+proceed to the next char and return an TokenInfo(AND_ASSIGN, line) to check 
+for AND_ASSIGN or '&=', I made an else-if statement to check for '&' and 
+return LAND or '&&'  otherwise it will just return a TokenInfo of AND by 
+default from hw1. This is very much similiar to the available case 
+statements for PLUS. 
+
+For the case of '|' from hw1, I added an else if statement that checks for 
+'=' which will proceed to the next char and return an TokenInfo(OR_ASSIGN, 
+line) to check for OR_ASSIGN or '|='. I added an else if statement that 
+checks for '|' which will proceed to the next char and return an 
+TokenInfo(LOR, line) to check for LOR or '||', otherwise it will just return 
+a TokenInfo of OR by default from hw1. This is very much similiar to the 
+available case statements for PLUS. 
+
+For the case of '^', I added an else if statement that checks for '=' which 
+will proceed to the next char and return an TokenInfo(XOR_ASSIGN, line) to 
+check for XOR_ASSIGN or '^=', otherwise it will just return a TokenInfo of 
+XOR by default from hw1. This is very much similiar to the available case 
+statements for PLUS. 
+
+For the case of '*', I added an else if statement that checks for '=' which 
+will proceed to the next char and return an TokenInfo(STAR_ASSIGN, line) to 
+check for STAR_ASSIGN or '*=", otherwise it will just return a TokenInfo of 
+STAR by default from hw1. This is very much similiar to the available case 
+statements for PLUS. 
+
+Within the getNextToken(), in the while statement that checks for white 
+space, and within the first 'if(ch == '/){...}'. In an else-if staement will 
+check for char being equal to '=' which will procced to next char and return 
+a TokenInfo of DIV_ASSIGN or '/=' other wise the default will be a DIV token.
+
+I also added case staement to check for ':' which will return the TokenInfo 
+of COLON.
+I also added case staement to check for '~' which will return the TokenInfo 
+of COMPLEMENT.
+I also added case staement to check for '?' which will return the TokenInfo 
+of QUESTION.
+
+For the case of '<', I added an if statement to check for another '<' which 
+will proceed onto the next char, it may be a left shift and return 'LS' 
+indicating '<<' otherwise. within this if statement will  check for '=' to 
+indicate a LS_ASSIGN or '<<='; I also added an else-if statement that checks 
+for '=' which will proceed to the next char and return an TokenInfo(LE, 
+line) or '<=' to check for less than or equal. Otherwise it will just return 
+the TokenInfo LS or '<' by default.
+
+For the case of '>', I added an if statement that checks for '=' which will 
+proceed to the next char and return an TokenInfo(GE, line) or '>=' to check 
+for greater than or equal. I also added an else-if statement to check for 
+another '>' which will proceed onto the next char, it may be a right shift 
+and return 'RS' indicating '>>' otherwise. within this else-if statement 
+will contain an nested else-if to check for '=' to indicate a RS_ASSIGN or 
+'>>='; also within this else-if statement will contain a nested if statement 
+to check for another '>' and procced to the next char and another nested if 
+statement from within checks for '=' indicatign a ZRS_ASSIGN or ">>>=", 
+other wise it will return a ZRS or '>>>' token.   Otherwise it will just 
+return a TokenInfo of GT or '>' by default from hw1. This is very much 
+similiar to the available case statements for <. 
+
+===============================================================================
+3.     All Java keywords.
+===============================================================================
+	In TokenInfo.java I added tokens to TokenKind to register respective 
+tokens of keywords in j-- based on 
+https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html 
+such as 
+BREAK("break"), BYTE("byte"), CASE("case"), CATCH("catch"), CONST("const"), 
+CONTINUE("continue"), DEFAULT("default"), DO("do"), DOUBLE 
+("double"),FALSE("false"), FINAL("final"),FINALLY("finally"), FOR("for"),             
+GOTO("goto"), IMPLEMENTS("implements"), INTERFACE("interface"), 
+LONG("long"), FLOAT("float"), DOUBLE ("double"), 
+NATIVE("native"), SHORT("short"), STRICTFP("strictfp"), 
+SWITCH("switch"), SYNCHRONIZED("synchronized"), THROW("throw"), 
+THROWS("throws"), TRY("try"), and TRANSIENT("transient").
+	In Scanner.java I added the remaining java keywords into the 
+"reserved.put(....image(),.....);" so it can be registered into the 
+scanner based on a comparison of available keywords in Scanner.java and
+https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html. 
+
+===============================================================================
+4.     Double precision literals (returned as DOUBLE_LITERAL).
+5.     Other literals in Java, e.g. FLOAT_LITERAL, LONG_LITERAL, etc.
+===============================================================================
+In TokenInfo.java I added tokens to TokenKind to register respective 
+tokens of keywords in j-- such as DOUBLE_LITERAL("<DOUBLE_LITERAL>").
+In TokenInfo.java I added tokens to TokenKind to register respective 
+tokens of keywords in j-- such as 
+LONG_LITERAL("<LONG_LITERAL>"), and FLOAT_LITERAL("<FLOAT_LITERAL>").
+	In Scanner.java in the getNextToken() method under the case statement of 
+'0' to '9', I added boolean helper conditions known as 'seeDot' to check 
+for a '.', 'seeHex' to check for a hexideciaml,'seeExp' to check for a 
+exponent,'seePow' to check for a power,'expSign' to check for a '+' or 
+'-' for an exponent, and 'seeInt' to check for a int. 
+	First an if statement added to check if the number is an integer, and if 
+so will return a new TokenInfo as an INT_LITERAL. Otherwise will be a 
+nested if condition to check the previous character in the buffer as an 
+'l' or 'L' with an nested if statement to check if it is a 
+decimal,exponenet,power,or an exponenet sign to rule any errors, other 
+wise a TokenInfo is returned as a LONG_LITERAL. Since either INT_LITERAL 
+or LONG_LITERAL is ruled out, then another if statement will check the 
+previous char of the buffer if '-' or '+' is to be found in the strign 
+to rule out possible errors. otherwise an nested if condition to check 
+the previous character in the buffer as an 'f' or 'F' with an nested if 
+statement to check if it is a hexideciaml,,power,or an decimal sign to 
+rule any errors, other wise a TokenInfo is returned as a FLOAT_LITERAL. 
+Proceeding it will be the if statement with an nested if statement to 
+check the previous char in the buffer as an 'e', 'E', 'p', 'P' in order 
+to rule out any errors of powers/exponenets, otherwise an TokenInfo will 
+be returned as a DOUBLE_LITERAL. 
+	
+===============================================================================
+6.     Other representations of integrals (hexadecimal, octal, etc)
+===============================================================================
+	In Scanner.java I implemented the a boolean helper function known 
+as 'isHex()' based on 'isDigit()' that checks if the char is a 
+hexadecimal and returns the respective hexadecimal chars such as 'a' to 
+'f', or 'A' to 'F'.  
+
+I implemented the a boolean helper function known as 'priorChar()' based 
+on 'isDigit()' that checks the buffer of a string, and the char of the 
+previous char, and then returns a buffer from the previous char.  
+
+In getNextToken() method I implemented an if and else staement to handle 
+both dots and hexidecimals. The if stament handles the errors of a char for 
+'0' by checking the char initially for '0', and then appends the '0' to the 
+buffer and proceeds to the next char, an nested if statement is to check for 
+'x' or 'X' which then will proceed through the buffer and see if it is an 
+hex. Finally a nested if statement is to check if the char is neither a 
+digit or a hex and also not a dot, if the conditions are met an error is to 
+be returned to indicate it is not a hex. 
+The proceeding else clause will handle the dots and have an nested if 
+statement to check for a '.' and proceed to the next char. Another if 
+statement nested from within will check if the char is not a digit and 
+return a TokenInfo that it is a DOT otherwise the buffer will be appended 
+with the dot indicating it isn't an int but a dot. 
+===============================================================================
+7.     Other  means for representing characters in Strings and chars. NB: 
+Not all of this may be practical to implement – full Unicode is hairy. In 
+your narrative, discuss what you could implement and discuss what you chose 
+not to implement and why 
+===============================================================================
+	I have yet to implement unicode due to time constraints....
+
+===============================================================================
+TESTING
+===============================================================================
+BUILD SUCCESSFUL
+Total time: 4 seconds
+jquach93@itserver6:~/cs451/hw2/j--$ ant clean
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw2/j--/build.xml
+
+clean:
+     [echo] Removing generated files and folders...
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw2/j--/lib/j--.jar
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw2/j--/lib/spim.jar
+   [delete] Deleting directory /courses/cs451/s17/wrc/jquach93/hw2/j--/classes
+
+BUILD SUCCESSFUL
+Total time: 1 second
+jquach93@itserver6:~/cs451/hw2/j--$ ant
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw2/j--/build.xml
+
+compile:
+     [echo] Compiling j-- source files...
+    [mkdir] Created dir: /courses/cs451/s17/wrc/jquach93/hw2/j--/classes
+    [javac] Compiling 77 source files to /courses/cs451/s17/wrc/jquach93/hw2/j--/classes
+
+compileSPIM:
+     [echo] Compiling j-- source files...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw2/j--/classes
+
+jar:
+     [echo] Bundling class files into jar files...
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw2/j--/lib/j--.jar
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw2/j--/lib/spim.jar
+
+runCompilerTests:
+     [echo] Compiling and running j-- (JVM) programs...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw2/j--/classes
+    [junit] Running junit.JMinusMinusTest
+    [junit] Testsuite: junit.JMinusMinusTest
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Series.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/LexicalErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/LexicalErrors.java:16: } found where class sought
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/SyntaxErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/TypeErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/TypeErrors.java:17: } found where class sought
+    [junit]
+    [junit]
+    [junit] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.248 sec
+    [junit] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.248 sec
+    [junit] ------------- Standard Output ---------------
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Series.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/LexicalErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/SyntaxErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/TypeErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] ------------- ---------------- ---------------
+    [junit] ------------- Standard Error -----------------
+    [junit] /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/LexicalErrors.java:16: } found where class sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw2/j--/tests/fail/TypeErrors.java:17: } found where class sought
+    [junit] ------------- ---------------- ---------------
+    [junit]
+    [junit] Testcase: testPass took 0.226 sec
+    [junit] Testcase: testFail took 0.014 sec
+    [junit]     FAILED
+    [junit] null
+    [junit] junit.framework.AssertionFailedError
+    [junit]     at junit.JMinusMinusTest.testFail(JMinusMinusTest.java:83)
+    [junit]
+    [junit] Test junit.JMinusMinusTest FAILED
+    [javac] Compiling 10 source files to /courses/cs451/s17/wrc/jquach93/hw2/j--/classes
+    [junit] Running junit.JMinusMinusTestRunner
+    [junit] Testsuite: junit.JMinusMinusTestRunner
+    [junit] Tests run: 5, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
+    [junit] Tests run: 5, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
+    [junit]
+    [junit] Testcase: testMessage took 0.002 sec
+    [junit] Testcase: warning took 0 sec
+    [junit]     FAILED
+    [junit] No tests found in junit.FactorialTest
+    [junit] junit.framework.AssertionFailedError: No tests found in junit.FactorialTest
+    [junit]
+    [junit] Testcase: warning took 0 sec
+    [junit]     FAILED
+    [junit] No tests found in junit.GCDTest
+    [junit] junit.framework.AssertionFailedError: No tests found in junit.GCDTest
+    [junit]
+    [junit] Testcase: warning took 0 sec
+    [junit]     FAILED
+    [junit] No tests found in junit.SeriesTest
+    [junit] junit.framework.AssertionFailedError: No tests found in junit.SeriesTest
+    [junit]
+    [junit] Testcase: testMessage took 0.003 sec
+    [junit] Test junit.JMinusMinusTestRunner FAILED
+
+
+===============================================================================

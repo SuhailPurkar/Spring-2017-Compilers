@@ -1,0 +1,123 @@
+//Mark Vo
+//cs451
+//HW3 
+
+package jminusminus;
+import static jminusminus.CLConstants.*;
+
+abstract class JTernaryExpression extends JExpression {
+
+    /** The ternary operator. */
+    protected String operator;
+
+    protected String colon ; //colon :
+
+    /** The lhs operand. */
+    protected JExpression lhs;
+
+	    protected JExpression mhs;
+	
+    /** The rhs operand. */
+    protected JExpression rhs;
+
+
+
+    protected JTernaryExpression(int line, String operator, String colon, JExpression lhs,
+            JExpression mhs, JExpression rhs) {
+        super(line);
+        this.operator = operator;
+        this.colon = colon;
+        this.lhs = lhs;
+		this.mhs = mhs;
+        this.rhs = rhs;
+
+    }
+
+    /**
+     * @inheritDoc
+     */
+
+    public void writeToStdOut(PrettyPrinter p) {
+        p.printf("<JTernaryExpression line=\"%d\" type=\"%s\" "
+                + "operator=\"%s\">\n", line(), ((type == null) ? "" : type
+                .toString()), Util.escapeSpecialXMLChars(operator));
+        p.indentRight();
+        p.printf("<BooleanExpression>\n");
+        p.indentRight();
+        lhs.writeToStdOut(p);
+        p.indentLeft();
+        p.printf("</BooleanExpression>\n");
+
+        p.printf("<Expression-1>\n");
+        p.indentRight();
+        rhs.writeToStdOut(p);
+        p.indentLeft();
+        p.printf("</Expression-1>\n");
+
+        p.printf("<Expression-2>\n");
+        p.indentRight();
+        srhs.writeToStdOut(p);
+        p.indentLeft();
+        p.printf("</Expression-2>\n");
+        p.indentLeft();
+
+        p.printf("</JTernaryExpression>\n");
+    }
+
+}
+
+/**
+ * The AST node for a ternary (?:) expression. 
+ * 
+ */
+
+class JTernaryOp extends JTernaryExpression {
+
+    /**
+     * Construct an AST node for an ternary expression given its line number,
+     * and the lhs, rhs and second rhs operands.
+     * 
+     * @param line
+     *            line in which the addition expression occurs in the source
+     *            file.
+     * @param lhs
+     *            the lhs operand.
+     * @param rhs
+     *            the rhs operand.
+     * @param srhs
+     *            the srhs operand.
+     */
+
+    public JTernaryOp(int line, JExpression cond, JExpression exp1, JExpression exp2) {
+        super(line, "?", ":", cond, exp1, exp2);
+    }
+
+    /**
+     * No analysis implemented yet -- 
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        // to be implemented 
+        return this;
+    }
+
+    /**
+     * No codegen implemented yet -- 
+     */
+
+    public void codegen(CLEmitter output) {
+        // to be implemented
+    }
+
+}
+
+
+
+
+
+
+

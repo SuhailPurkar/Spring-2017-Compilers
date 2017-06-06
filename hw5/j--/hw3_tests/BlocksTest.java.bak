@@ -1,0 +1,13 @@
+public class BlocksTest{
+
+		static{
+			int i = 2;
+		}
+
+		
+		{
+			
+		}
+		
+		
+}

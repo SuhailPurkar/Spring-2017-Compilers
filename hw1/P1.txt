@@ -1,0 +1,419 @@
+===============================================================================
+===============================================================================
+HW1 Narrative
+===============================================================================
+Provided code is from http://www.cs.umb.edu/j--/j--.zip 
+===============================================================================
+Do exercise 1-1 (that’s Chapter 1, exercise 1). Make sure you set up your 
+development environment properly. This will take some time. Read through 
+Chapter 1 carefully, and study the code in the code tree. This will take 
+even more time. 
+===============================================================================
+
+At first I downloaded the j--, from the  http://www.cs.umb.edu/j--/j--.zip  
+before I started the homework with exercise 1.1. Ant is already set up in my 
+C:\ file along with Eclipse Java installed. 
+===============================================================================
+Modify the example compiler to add the division operator / as described in 
+Chapter 1. 
+===============================================================================
+
+
+In TokenInfo.java, in the enum TokenKind, the token for Divide are added as 
+'DIV("/")' respectively. In Scanner.java, changes are added in the 
+getNextToken for the division operator in the else clause in to be able to 
+return the 'DIV' token. 
+
+In Parser.java, the multiplicativeExpression() method is modified to provide 
+the division expression which is based on the existing multiplication 
+expression method due to division being an inverse of multiplication. 
+
+In JMinusMinusTestRunner.java I added DivisionTest.java in the j-- test 
+suite to commence testing. 
+
+In JBinaryExpression.java , in the JDivideOP AST, analyze() method is 
+implemented to analyze the division operator and codegen() to generate code 
+for operands and emi JVM instruction for division of two numbers based on 
+classes above JMultiplyOP. 
+
+A .java file called Division.java is added in j--/tests/pass folder to 
+implement division, and contains a test case for Division function to return 
+dividing x by y. A .java file called DivisionTest.java is added in j--/junit 
+folder contains a testDivide() method tht is meant to test the divide method 
+in Division.java. A Division.java file is also added to j--/test/fail folder 
+to see if division test will fail if anything other than number type is 
+inputed. 
+
+===============================================================================
+=============================================================================== 
+Modify the compiler to add the modulo % operator. (Exercise 1.3)
+===============================================================================
+
+In TokenInfo.java, in the enum TokenKind, the token for Modulo are added as 
+'MOD("%")' respectively. 
+
+In Scanner.java, changes are added in the getNextToken for he division 
+operator in the else clause in to be able to return the 'MOD' token. 
+
+In Parser.java, the multiplicativeExpression() method is modified to provide 
+the modulo expression which is based on the existing multiplication 
+expression method due to modulo being an similiar to division. In 
+JMinusMinusTestRunner.java I added ModuloTest.java in the j-- test suite to 
+commence testing. 
+
+In JBinaryExpression.java , a class called 'JModuloOP'is implemented, 
+analyze() method is implemented to analyze the modulo operator and codegen() 
+to generate code for operands and emit JVM instruction for modulo of two 
+numbers based on classes above JMultiplyOP. 
+
+A .java file called Modulo.java is added in j--/tests/pass folder to 
+implement modulo, and contains a test case for Modulo function to return the 
+remainder by dividing x by y. 
+
+A .java file called ModuloTest.java is added in j--/junit folder contains a 
+testModulo() method tht is meant to test the modulo method in Modulo.java. A 
+Modulo.java file is also added to j--/test/fail folder to see if modulo test 
+will fail if anything other than number type is inputed. 
+
+===============================================================================
+===============================================================================
+Modify the compiler to add the unary plus + operator. 
+===============================================================================
+
+
+In JMinusMinusTestRunner.java I added UnaryPlusTest.java in the j-- test 
+suite to commence testing. 
+
+In the Parser.java file I added an 'else-if' clause to check for 'PLUS' and 
+return unaryExpression of UnaryPLUS. For Scanner.java and TokenInfo.java, 
+'+' already eist so it is redundant to add it. In JUnaryExpression.java, a 
+JUnaryPlusOp will be added due to unaryplus being a unary expression. 
+ 
+A .java file called UnaryPlus.java is added in j--/tests/pass folder to 
+implement UnaryPlus, and contains a test case for UnaryPlus function to 
+return the respective value. 
+
+A .java file called UnaryPlusTest.java is added in j--/junit folder contains 
+a testUnaryPlus() method tht is meant to test the UnaryPlus method in 
+UnaryPlus.java. A UnaryPlus.java file is also added to j--/test/fail folder 
+to see if UnaryPlus test will fail.
+
+===============================================================================
+===============================================================================
+(Extra credit) Modify the compiler to add the int bitwise operators, &, | 
+and ^. NB: this will involve adding new syntactic rules (and so additional 
+recursive descent parsing procedures). Do your narrative first. See the 
+grade sheet. (Exercise 1.5,1.6,1.7)
+===============================================================================
+
+In TokenInfo.java, I added AND("&"), XOR("^"), and OR("|") into 
+the mix to pick up the respective bitwise operators as a token.  
+
+In Scanner.java, within case '&' of getNextToken(), else statement is modified
+to incorporate 'AND' as a token.
+
+In Scanner.java, a case '|' is incorporated in getNextToken(), a new 
+TokenInfo is to be returned to incorporate 'OR' as a token.
+
+In Scanner.java, a case '^' is incorporated in getNextToken(), a new 
+TokenInfo is to be returned to incorporate 'XOR' as a token.
+
+In Parser.java , a JExpression 'andExpession()' is implemented based on the 
+syntax and recursive parsing procedures of 'equalityExpression()' ,likewise 
+it has a nested if statement within while statement to check for 'AND', and 
+then instantiate a 'JAndOp'()' based on 'JEqualOp()' with an 
+'equalityExpression()', otherwise the Parser will continue along it's way to 
+return the left hand side.  
+
+ In Parser.java , a JExpression 'xOrExpession()' is implemented based on the 
+syntax and recursive parsing procedures  of 'andExpression()' ,likewise it 
+has a nested if statement within while statement to check for 'XOR', and 
+then instantiate a 'JXorOp'()' based on 'JAndOp()'with an 
+'andExpression()', otherwise the Parser will continue along it's way to 
+return the left hand side. 
+
+In Parser.java , a JExpression 'orExpession()' is implemented based on the 
+syntax and recursive parsing procedures  of 'xOrExpression()' ,likewise it 
+has a nested if statement within while statement to check for 'OR', and then 
+instantiate a 'JOrOp'()' based on 'JAndOp()'with an 'xOrExpression()', 
+otherwise the Parser will continue along it's way to return the left hand 
+side.
+
+In JBinaryExpression.java, classes 'JAndOp', 'JXorOp', and 'JOrOp" are 
+implemented extend JBinaryExpression on the rhs and lhs with their 
+respective symbols '&',"^', and '|' similiar to what was done in the 
+previous 'JModuloOP' class along with analyze, and codegen. They will all 
+output their respective instruction 'IAND', 'IXOR', and 'IOR'. 
+===============================================================================
+TESTING
+===============================================================================
+
+jquach93@itserver6:~$ cd cs451/hw1/j--
+jquach93@itserver6:~/cs451/hw1/j--$ ls
+bin  build.xml  grammar  lexicalgrammar  lib  src  tests
+jquach93@itserver6:~/cs451/hw1/j--$ ant clean
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw1/j--/build.xml
+
+clean:
+     [echo] Removing generated files and folders...
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+jquach93@itserver6:~/cs451/hw1/j--$ ant
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw1/j--/build.xml
+
+compile:
+     [echo] Compiling j-- source files...
+    [mkdir] Created dir: /courses/cs451/s17/wrc/jquach93/hw1/j--/classes
+    [javac] Compiling 77 source files to /courses/cs451/s17/wrc/jquach93/hw1/j--/classes
+
+compileSPIM:
+     [echo] Compiling j-- source files...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw1/j--/classes
+
+jar:
+     [echo] Bundling class files into jar files...
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw1/j--/lib/j--.jar
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw1/j--/lib/spim.jar
+
+runCompilerTests:
+     [echo] Compiling and running j-- (JVM) programs...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw1/j--/classes
+    [junit] Running junit.JMinusMinusTest
+    [junit] Testsuite: junit.JMinusMinusTest
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Division.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Modulo.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Series.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/UnaryPlus.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/Division.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/Division.java:6: Type char doesn't match type int
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:11: Unidentified input token: '#'
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:11: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:11: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: ( found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: Type sought where ( found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: [ found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: Type sought where [ found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: ) found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: Type sought where ) found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: ( found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: Type sought where ( found
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/Modulo.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/Modulo.java:6: Type char doesn't match type int
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/SyntaxErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/SyntaxErrors.java:14: Literal sought where int found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/SyntaxErrors.java:14: { found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/SyntaxErrors.java:15: Literal sought where = found
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/TypeErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/TypeErrors.java:14: Type int doesn't match type boolean
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/UnaryPlus.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/UnaryPlus.java:6: Unidentified input token: '@'
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/UnaryPlus.java:6: Literal sought where ) found
+    [junit]
+    [junit]
+    [junit] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.268 sec
+    [junit] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.268 sec
+    [junit] ------------- Standard Output ---------------
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Division.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Modulo.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Series.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/pass/UnaryPlus.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/Division.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/Modulo.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/SyntaxErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/TypeErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/UnaryPlus.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] ------------- ---------------- ---------------
+    [junit] ------------- Standard Error -----------------
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/Division.java:6: Type char doesn't match type int
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:11: Unidentified input token: '#'
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:11: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:11: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: ( found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: Type sought where ( found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: [ found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: Type sought where [ found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: ) found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:12: Type sought where ) found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: . found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: Type sought where . found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: ( found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/LexicalErrors.java:13: Type sought where ( found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/Modulo.java:6: Type char doesn't match type int
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/SyntaxErrors.java:14: Literal sought where int found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/SyntaxErrors.java:14: { found where ; sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/SyntaxErrors.java:15: Literal sought where = found
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/TypeErrors.java:14: Type int doesn't match type boolean
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/UnaryPlus.java:6: Unidentified input token: '@'
+    [junit] /courses/cs451/s17/wrc/jquach93/hw1/j--/tests/fail/UnaryPlus.java:6: Literal sought where ) found
+    [junit] ------------- ---------------- ---------------
+    [junit]
+    [junit] Testcase: testPass took 0.249 sec
+    [junit] Testcase: testFail took 0.015 sec
+    [javac] Compiling 13 source files to /courses/cs451/s17/wrc/jquach93/hw1/j--/classes
+    [junit] Running junit.JMinusMinusTestRunner
+    [junit] Testsuite: junit.JMinusMinusTestRunner
+    [junit] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 sec
+    [junit] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 sec
+    [junit]
+    [junit] Testcase: testMessage took 0.002 sec
+    [junit] Testcase: testFactorial took 0 sec
+    [junit] Testcase: testCompute took 0 sec
+    [junit] Testcase: testComputeSum took 0.001 sec
+    [junit] Testcase: testMessage took 0.003 sec
+    [junit] Testcase: testDivide took 0.001 sec
+    [junit] Testcase: testModulo took 0 sec
+    [junit] Testcase: testUnaryPlus took 0.001 sec
+
+BUILD SUCCESSFUL
+Total time: 4 seconds
+jquach93@itserver6:~/cs451/hw1/j--$
+
+
+===============================================================================

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="j--/src"/>
+	<classpathentry excluding="clemitter/|spim/" kind="src" path="j--/tests"/>
+	<classpathentry kind="src" path="j--/tests/clemitter"/>
+	<classpathentry kind="src" path="j--/tests/spim"/>
+	<classpathentry excluding="j--/src/|j--/tests/|j--/tests/clemitter/|j--/tests/spim/" kind="src" path=""/>
+	<classpathentry kind="lib" path="j--/lib/j--.jar"/>
+	<classpathentry kind="lib" path="j--/lib/j2h.jar"/>
+	<classpathentry kind="lib" path="j--/lib/javacc.jar"/>
+	<classpathentry kind="lib" path="j--/lib/junit.jar"/>
+	<classpathentry kind="lib" path="j--/lib/spim.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

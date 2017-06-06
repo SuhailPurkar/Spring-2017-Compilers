@@ -1,0 +1,487 @@
+===============================================================================
+===============================================================================
+HW3 Narrative
+===============================================================================
+Provided code is from http://www.cs.umb.edu/j--/j--.zip 
+===============================================================================
+All of these will require your defining new J-classes, but with empty 
+analyze() and codegen() bodies. Your choices for these are part of your 
+assignment Ð use the ones that are already there as a guide. 
+===============================================================================
+Your job here is to modify the (handwritten) Parser to implement additional 
+syntax for j--. Specifically, you should add and implement the following 
+Java syntax to j--: 
+===============================================================================
+1.The double literal; this is really easy as you have just one token kind 
+for double literals. 
+===============================================================================
+
+In Type.java I added LONG, FLOAT, and DOUBLE along with their respective 
+BOXED_LONG, BOXED_FLOAT, BOXED_DOUBLE types to register the primitive types 
+since they have not been previosuly included. 
+
+In Parser.java in boolean 'basicType()', more else if statements are to 
+check for LONG, FLOAT, DOUBLE and respectively return their types. 
+
+In Parser.java in boolean 'seeBasicType()', within the if statement, a 
+see(LONG) is added to check for long, a see(FLOAT) is added to check for 
+double, a see(DOUBLE) is added to check for double. Within 
+'seeReferenceType()', the nested if statement will 'have(DOUBLE)' to check 
+for a DOUBLE to return. 
+
+In the 'literal()' method I added more else-if statements to check for 
+LONG_LITERAL, FLOAT_LITERAL, and DOUBLE_LITERAL respectively and return 
+their respective literals.  
+
+In j-- a new J-Class called "JLiteralLong.java" is implemented in order to 
+provide an AST for the long literal. It is very much based on 
+'JLiteralInt.java'. With respective empty analyze() that checks for long, 
+codegen() , writeToStdOut() implemented.
+
+In j-- a new J-Class called "JLiteralFloat.java" is implemented in order to 
+provide an AST for the float literal. It is very much based on 
+'JLiteralInt.java'. With respective empty analyze() that checks for float, 
+codegen() , writeToStdOut() implemented.
+
+In j-- a new J-Class called "JLiteralDouble.java" is implemented in order to 
+provide an AST for the double literal. It is very much based on 
+'JLiteralInt.java'. With respective empty analyze() that checks for double, 
+codegen() that parses the text for integer, writeToStdOut() implemented.
+===============================================================================
+2.The logical or operator ||, the assignment operators -=, *=, /=, %=, the 
+prefix -- , and the postfix ++. 
+===============================================================================
+
+In JUnaryExpression.java, I have added a class called 'JPostIncrementOp' is 
+added as an AST node to check for "post++" with analyze(), and codegen() , 
+very much similiarly based on the class 'JPostDecrementOp'. 
+
+In JUnaryExpression.java, I have added a class called 'JPreDecrementOp' is 
+added as an AST node to check for "pre--" with analyze(), and codegen() , 
+very much similiarly based on the class 'JPreIncrementOp'. 
+
+In JAssignment.java, I have added a class called 'JMinusAssignOp' is 
+added as an AST node to check for "-=" with analyze(), and codegen() , 
+very much similiarly based on the class 'JPlusAssignOp'. 
+
+In JAssignment.java, I have added a class called 'JStarAssignOp' is 
+added as an AST node to check for "*=" with analyze(), and codegen() , 
+very much similiarly based on the class 'JPlusAssignOp'. 
+
+In JAssignment.java, I have added a class called 'JDivideAssignOp' is 
+added as an AST node to check for "/=" with analyze(), and codegen() , 
+very much similiarly based on the class 'JPlusAssignOp'. 
+
+In JAssignment.java, I have added a class called 'JModAssignOp' is 
+added as an AST node to check for "%=" with analyze(), and codegen() , 
+very much similiarly based on the class 'JPlusAssignOp'. 
+
+In JAssignment.java, I have added a class called 'JAndAssignOp' is 
+added as an AST node to check for "&=" with analyze(), and codegen() , 
+very much similiarly based on the class 'JPlusAssignOp'. 
+
+In Parser.java within JExpression 'statementExpression()' I added more 
+conditional or expressions to the if statement to check for instances of 
+JPredecrementOp and JPostIncrementOp. 
+
+In Parser.java within JExpression 'assignmentExpression()' I added multiple 
+else-if statement to check respectively for 
+MINUS_ASSIGN,STAR_ASSIGN,DIV_ASSIGN,MOD_ASSIGN, and AND_ASSIGN and return 
+the respective assignment operators. 
+
+In Parser.java within JExpression 'unaryExpression()' I added a else-if 
+statement to check for DEC from which a pre-decrement operand will be 
+returned as a unary expression. 
+
+In Parser.java within JExpression 'postfixExpression()' I added a while 
+statement to check for INC from which a new post increment op woll be 
+instantiated as a priamry expression. 
+
+
+===============================================================================
+3.Static blocks and instance blocks.
+===============================================================================
+In j-- a new J-Class called "JInstanceBlock.java" is implemented in 
+order to provide an AST for the instance block . It is very much based 
+on 'JBlock.java'. With respective empty analyze(), codegen(), 
+writeToStdOut(),etc implemented.
+
+In j-- a new J-Class called "JStaticBlock.java" is implemented in 
+order to provide an AST for the static block . It is very much based 
+on 'JBlock.java'. With respective empty analyze(), codegen(), 
+writeToStdOut(),etc implemented.
+
+In Parser.java in private 'memberDecl()' method, else-if statements are 
+added to check for the '{' with a block either empty or not, a memberDecl is 
+returned as a JInstanceBlock. The other else-if statement is added to check 
+for '{' and size of arraylist being equal to 1 and contains a STATIC token 
+with a block either empty or not, a memberDecl is returned as a JStaticBlock.
+
+===============================================================================
+4.The interface type declarations (and the necessary modification to class 
+declarations to handle the implements clause). 
+===============================================================================
+In JClassDeclaration.java an ArrayList 'interfaces' is implemented, and 
+within the 'JClassDeclaration()" method, an this.interfaces is added to the 
+list of parameters for the AST node.  
+ 
+In JClassDeclaration.java within the 'writeToStdOut()" method, an for loop 
+will check for any implement for the class, and will be implemented to the 
+string. afterwoods it will indent ot the left and write out implements. This 
+is similiar to the 'mods' and 'classBlock' examples. 
+
+In Parser.java in private 'typeDeclaration()' method is modified to have a 
+while statement check for a semicolon, An if staement is to check for 
+interface of which it will return an interface declaration otherwise a class 
+Declaration will be returned. 
+
+Within the 'classDeclaration()' method I have added an ArrayList called 
+'interfaces' to instantiate a new ArrayList. An if statement will check for 
+implements and add a  qualified identifier to the interfaces under a 
+do-while statement checking for a comma. Another if statement will check for 
+rxtends and extend qualified identifier to the interfaces under a do-while 
+statement checking for a comma. 
+
+Within the 'classBody()', within the whle statement, an if statement is 
+added to check for SEMI token and tokens from the scanner will be added to 
+the array members, otherwise it will default to member delcaration added to 
+members. 
+
+An new method known as 'interfaceDeclaration()' is added similiarly based on 
+'classDeclaration()' method, from within an int will be instantiated in 
+order for the scanner to scan through the line of tokens. Next it will check 
+for an INTERFACE token and IDENTIFIER token. The scanner then stores the 
+previous token into the string. An if statement will check for the token 
+EXTENDS and it will extend the qualified identifier while a COMMA token is 
+there. It will finally return a new interface declaration at the end. 
+
+An new method known as 'interfaceBody()' is added similiarly based on 
+'classBody()' method, from within an arraylist is instantiated to store 
+tokens into it. A while statement checks for if the string doesn't see ')' 
+or 'EOF', form within a nested if statement will check for the SEMI token 
+and tokens from the scanner will be added to the array members, otherwise it 
+will default to interface member decalration will be added to members. 
+
+Within 'memberDecl()' method I added else-if statements to check for CLASS 
+and INTERFACE tokens, and will return the respective member declaration as a 
+classDeclaration or a interfaceDeclaration. 
+
+An new method known as 'interfaceMemberDecl()' is added similiarly based on 
+the modified 'memberDecl()' method, JMember 'memberDecl' is respectively 
+replaced with 'interfaceMemberDecl' 
+
+
+In j-- a new J-Class called "JInterfaceDeclaration.java" is implemented in 
+order to provide an AST for the interface declaration. It is very much based 
+on 'JClassDeclaration.java'. With respective empyty analyze(), codegen(), 
+writeToStdOut(),etc implemented.
+
+
+===============================================================================
+5.The conditional expression. (e1 ? e2 : e3) 
+===============================================================================
+
+A J-class called 'JTernaryExpression.java' added to implemented an AST node 
+for ternary expressions this is similiarly based on JBinaryExpression.java 
+with similiar operands, and contains a class called JQuestionOp() with empty 
+analyze(), code() methods. 
+
+In JBooleanBinaryExpression.java an class called JLogicalOrOp is implemented 
+to check for '||' from left to right based on existing JLogicalAndOp class
+with analyze(), and empty codegen() methods. 
+
+In Parser.java, new method known as 'conditionalOrExpression()' is added 
+similiarly based on the existing 'conditionalAndExpression()' method, the 
+JExpression lhs is instantiated as a conditionalAndExpression(), with a 
+while statement to check for more tokens; if a LOR token is recieved, then 
+the left hand side is returned as a JLogicalOrOp(). Otherwise the condition 
+is returned as false.
+
+In Parser.java, new method known as 'conditionalExpression()' is added 
+similiarly based on the existing 'conditionalAndExpression()' method, the 
+JExpression condition is instantiated as a conditionalOrExpression(), with a 
+while statement to check for more tokens; if a QUESTION token is recieved, 
+then the assignmentExpression is declared as correct followed by a COLON. An 
+expression is returned as a JQuestionOp. Otherwise the condition is returned 
+as false.
+===============================================================================
+6.The for-statement, including both the basic for-statement and the enhanced 
+for-statement. 
+===============================================================================
+
+In j-- a new J-Class called "JForStatement.java" is implemented in order to 
+provide an AST for the 'for' statement. It is very much based on 
+'JIfStatement.java'. With respective analyze(), codegen(), writeToStdOut() 
+implemented. 
+
+In j-- a new J-Class called "JEnhancedForStatement.java" is implemented in 
+order to provide an AST for the enhanced 'for' statement. It is very much 
+based on 'JIfStatement.java'. With respective analyze(), codegen(), 
+writeToStdOut() implemented. 
+
+In Parser.java within the 'statement()' method an if statement is added 
+will check for 'FOR' statement, from there the next cahracter must be a left 
+parantheses or '('. From there an if statement will check for the data type 
+if it is within the loop of which a variable declarator of a type will be 
+instantiated, otherwise it will initialize and update the statement 
+expression and return as a regular for statement. An nested 'if' statement 
+within the if statement will check for a COLON within the 'for' statement 
+expression which distinguishes one condition to another. It will then check 
+for the right parantheses or ')' then closing the for statement and 
+returning it as an enhanced-for statement. Otherwise the expression will be 
+updated and return as a regular for statement. 
+
+
+===============================================================================
+7.The break and continue statements, and labeled statements. 
+===============================================================================
+In j-- a new J-Class called "JEmptyMember.java" is implemented in 
+order to provide an AST for empty statement. It is very much based 
+on 'Member.java'. With respective empty analyze(), codegen(), 
+writeToStdOut(),etc implemented.
+
+In j-- a new J-Class called "JBreakStatement.java" is implemented in 
+order to provide an AST for thebreak statement. It is very much based 
+on 'JIfStatement.java'. With respective empty analyze(), codegen(), 
+writeToStdOut(),etc implemented.
+
+In Parser.java within the 'statement()' method an else-if statement will 
+check for 'BREAK', instantiate an expression that will be returned as a 
+break statement.  
+
+===============================================================================
+8.The do-while statement. 
+===============================================================================
+In j-- a new J-Class called "JDoWhileStatement.java" is implemented in 
+order to provide an AST for empty statement. It is very much based 
+on 'JWhileStatement.java'. With respective analyze(), empty codegen(), 
+writeToStdOut() implemented.
+
+In Parser.java within the 'statement()' method an else-if statement will 
+check for 'DO', instantiate an statement with the next token to be a WHILE, 
+with the test expression parsed and returns a JDoWhileStatement(), 
+similiarly to existing WHILE condition. 
+===============================================================================
+TESTING
+===============================================================================
+
+jquach93@itserver6:~/cs451/hw3/j--$ ant clean
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw3/j--/build.xml
+
+clean:
+     [echo] Removing generated files and folders...
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw3/j--/lib/j--.jar
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw3/j--/lib/spim.jar
+   [delete] Deleting directory /courses/cs451/s17/wrc/jquach93/hw3/j--/classes
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+jquach93@itserver6:~/cs451/hw3/j--$ ant
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw3/j--/build.xml
+
+compile:
+     [echo] Compiling j-- source files...
+    [mkdir] Created dir: /courses/cs451/s17/wrc/jquach93/hw3/j--/classes
+    [javac] Compiling 89 source files to /courses/cs451/s17/wrc/jquach93/hw3/j--/classes
+
+compileSPIM:
+     [echo] Compiling j-- source files...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw3/j--/classes
+
+jar:
+     [echo] Bundling class files into jar files...
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw3/j--/lib/j--.jar
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw3/j--/lib/spim.jar
+
+runCompilerTests:
+     [echo] Compiling and running j-- (JVM) programs...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw3/j--/classes
+    [junit] Running junit.JMinusMinusTest
+    [junit] Testsuite: junit.JMinusMinusTest
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Series.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/LexicalErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/LexicalErrors.java:16: } found where class sought
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/SyntaxErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/TypeErrors.java ...
+    [junit]
+    [junit] /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/TypeErrors.java:17: } found where class sought
+    [junit]
+    [junit]
+    [junit] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.254 sec
+    [junit] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.254 sec
+    [junit] ------------- Standard Output ---------------
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Series.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/LexicalErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/SyntaxErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] Running j-- (with handwritten frontend) on /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/TypeErrors.java ...
+    [junit]
+    [junit]
+    [junit]
+    [junit] ------------- ---------------- ---------------
+    [junit] ------------- Standard Error -----------------
+    [junit] /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/LexicalErrors.java:16: } found where class sought
+    [junit] /courses/cs451/s17/wrc/jquach93/hw3/j--/tests/fail/TypeErrors.java:17: } found where class sought
+    [junit] ------------- ---------------- ---------------
+    [junit]
+    [junit] Testcase: testPass took 0.221 sec
+    [junit] Testcase: testFail took 0.026 sec
+    [junit]     FAILED
+    [junit] null
+    [junit] junit.framework.AssertionFailedError
+    [junit]     at junit.JMinusMinusTest.testFail(JMinusMinusTest.java:83)
+    [junit]
+    [junit] Test junit.JMinusMinusTest FAILED
+    [javac] Compiling 10 source files to /courses/cs451/s17/wrc/jquach93/hw3/j--/classes
+    [junit] Running junit.JMinusMinusTestRunner
+    [junit] Testsuite: junit.JMinusMinusTestRunner
+    [junit] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 sec
+    [junit] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 sec
+    [junit]
+
+BUILD SUCCESSFUL
+Total time: 4 seconds
+jquach93@itserver6:~/cs451/hw3/j--$
+/pass/Arrays.java ...
+
+package mytest;
+
+public class HW3Test {
+	
+		for ( ; ; ) {
+			System.out.println(); 
+		}
+		
+		for (final int i = 0; i < 10; i++, b++) 
+			;
+		
+		for (a = 1, b = 1; a == b; a++, b--) 
+			;
+		
+		for (final int i = 0, h = 4; ; ) {	
+		}
+		
+		for (String element : array) { 
+		}
+		;
+		
+		for (final int i : Integers) { 
+        }
+		
+	
+			i += j;
+			i -= j;
+			;;;;;;;;;;;   
+			i *= j;
+			i /= j;
+			--i;
+			++j;
+			i++;
+			i = b || c || d || e || f || (f > g) ? h : j;
+			j++;
+			double c = (0 >= 4) ? 7.62 : 12.7;
+			if (true || false)
+				j--;	
+	
+}
+
+
+
+===============================================================================

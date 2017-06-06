@@ -1,0 +1,8 @@
+//Used to test the parsing of doubles
+public class DoubleTesting{
+//Some double literals and a double variable to test parsing
+double 1.12;
+double thisIsaDouble = 1.11;
+double 3.69;
+
+}

@@ -1,0 +1,2130 @@
+===============================================================================
+===============================================================================
+HW4 Narrative
+===============================================================================
+Provided code is from http://www.cs.umb.edu/j--/j--.zip 
+===============================================================================
+===============================================================================
+Your task here is to modify the file j--.jj 
+to implement a scanner and parser for the following additions to j--.
+===============================================================================
+1.Doubles and floats. 
+===============================================================================
+My HW4 starts off with a direct continuation of my j-- in HW3 as a starting 
+point. 
+In reserve words TOKEN, I added DOUBLE to check for double token in the 
+reserve word. 
+In reserve words TOKEN, I added FLOAT to check for float token in the 
+reserve word. 
+In reserve words TOKEN, I added LONG to check for long token in the 
+reserve word. 
+
+In operators TOKEN, I added COLON to check for colon token in the 
+reserve word. 
+
+In identifiers TOKEN, I added #EXPONENT to check either 'E' or 'e' for 
+exponents in the literal. I also added #SIGN to check either '+' or '-' for 
+either magnitude of the values in exponent in the literal. I added #SUFFIX 
+to check either 'F' or 'f' for in the literal in order to be able to check 
+whether the value is a float, and check either 'D' or 'd' for in the literal 
+in order to be able to check whether the value is a double. 
+
+In literal TOKEN, I added DOUBLE_LITERAL to check for colon token in the 
+reserve word.
+For the first sign of a double literal indicates if there is a dot after the 
+zero digit followed by the next digit. The number is multiplied by either a 
+non zero digit exponent. The exponent is checked whether it is a signed non 
+zero digit, followed by whether it's digit is multiplied by a suffix in 
+order to indicate the number/value is a float or double. 
+For the second sign of a double literal indicates if there is a digit 
+followed by a dot after the digit followed by the next digit. The number is 
+multiplied by either a non zero digit exponent. The exponent is checked 
+whether it is a signed non zero digit, followed by whether it's digit is 
+multiplied by a suffix in order to indicate the number/value is a float or 
+double.
+For the third sign of a double literal indicates if there is a digit that is 
+multiplied by either a non zero digit exponent. The exponent is checked 
+whether it's signed non zero digit is multiplied by a suffix in order to 
+indicate the number/value is a float or double. 
+For the fourth sign of a double literal indicates if there is a digit that is 
+multiplied by either a non zero digit exponent. The exponent is checked 
+whether it's suffix is multiplied by a signed non zero digit in order to 
+indicate the number/value is a float or double. 
+
+Both FLOAT_LITERAL, and LONG_LITERAL would be duplicates of DOUBLE_LITERAL, 
+since it they are all technically floats but vary in level of precision. 
+
+In private Type basicType(), I modified the try statement to by adding a 
+DOUBLE instance to parse the doubles in a basic type.
+
+In private JExpression literal(), I modified the try statement by adding a 
+DOUBLE_LITERAL expression to implement doubles in the literal similiar to 
+the expressions within the try statement. The same was done with LONG_LITERAL,
+and FLOAT_LITERAL as with done with DOUBLE_LITERAL.
+===============================================================================
+2.The classic and enhanced for-statements.
+===============================================================================
+
+In reserve words TOKEN, I added FOR to check for the for token in the 
+reserve words.
+ 
+ In private JStatement statement(), I added both JExpression 'array' to 
+provide an array for the for statements  , and 'update' to be able to 
+update the for statements. I also added JStatement 'initialize' to 
+initialize the for statements, and 'terminate' to terminate the for 
+statements. I also added a JBlock 'bodyblock' to indicate a body for the 
+for statements. 
+	Within the try statement of the statement(), I added a <FOR> {...} in 
+order for j--.jj to parse a for statement. The FOR statement begins with 
+a token in the line with a left parentheses or '(' followed with a 
+variable declarator instantiated. Within the brackets, the parser looks 
+ahead of the string to check for an array, checks if expresion is 
+terminated, and updates the expression. It is finally closed by a right 
+parantheses or ')'. A bodyblock is instantiated to contain the body in 
+the for statement. If the for conditions are not terminated then it 
+returns a for statement, otherwise an enhanced for statement is returned 
+to indicate a for statement with multiple conditions divided by 
+semicolons in a for loop. 
+
+===============================================================================
+3.The interface declaration and the implements clause in the class 
+declaration.
+===============================================================================
+
+In reserve words TOKEN, I added IMPLEMENTS and INTERFACE to check for 
+implements and interface tokens in the reserve words. 
+
+Within private classDeclaration(), in the try statement, I included 
+IMPLEMENTS to instantiated an qualified identifier to be able to 
+implement an qualified identifier.
+
+In j--.jj I added a private JInterfaceDeclaration known as 
+interfaceDeclaration() that is meant to parse an interface declation, it is 
+very much based on the JClassDeclaration classDeclaration(); except that a 
+interfaceBody instead of classBody that is instantiated. Within the try 
+statement, a <INTERFACE> is in place instead of <CLASS>. Much like 
+classDeclaration(), the superclass implements and extends the qualified 
+identifier. Instead of a classBody() instantiated, an interfaceBody() is 
+instantiated. Finally a JInterfaceDeclaration() is returned with an 
+interfaceBody instead of a JClassDeclaration(). 
+
+In j--.jj I added a private ArrayList<JMember> known as interfaceBody(), 
+that is exaclty based of off of the ArrayList classBody(), this will allow 
+interface declaration to parse a interface body.
+ 
+Within private JAST typeDeclaration(), in the try statement, I included a 
+typeDecl that can be either  to instantiated an interface declaration or 
+class declarationto be able to parse a type declaration. 
+
+
+
+===============================================================================
+TESTING
+===============================================================================
+
+jquach93@itserver6:~/cs451/hw4/j--$ ant clean
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw4/j--/build.xml
+
+clean:
+     [echo] Removing generated files and folders...
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/Token.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/TokenMgrError.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/ParseException.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/JavaCCParser.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/JavaCCParserTokenManager.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/JavaCCParserConstants.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/SimpleCharStream.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/lib/j--.jar
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/lib/spim.jar
+   [delete] Deleting directory /courses/cs451/s17/wrc/jquach93/hw4/j--/classes
+   
+jquach93@itserver6:~/cs451/hw4/j--$ ant testJavaCCParser
+
+...........................................(text too long to clipboard on ssh command line)
+.........................................................................
+..............................................................................
+    [junit]             <JStatementExpression line="32">
+    [junit]               <JSuperConstruction line="32"/>
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JLiteralString line="32" type="" value="&quot;Panthera tigris corbetti&quot;"/>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JSuperConstruction>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JConstructorDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]     <JClassDeclaration line="37" name="Animalia" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JMethodDeclaration line="39" name="main" returnType="void">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]           <JFormalParameter line="39" name="args" type="String[]"/>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="39">
+    [junit]             <JVariableDeclaration>
+    [junit]               <Modifiers>
+    [junit]               </Modifiers>
+    [junit]               <VariableDeclarators>
+    [junit]                 <JVariableDeclarator line="40" name="fruitFly" type="FruitFly">
+    [junit]                   <Initializer>
+    [junit]                     <JNewOp line="40" type="FruitFly"/>
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JNewOp>
+    [junit]                   </Initializer>
+    [junit]                 </JVariableDeclarator>
+    [junit]               </VariableDeclarators>
+    [junit]             </JVariableDeclaration>
+    [junit]             <JVariableDeclaration>
+    [junit]               <Modifiers>
+    [junit]               </Modifiers>
+    [junit]               <VariableDeclarators>
+    [junit]                 <JVariableDeclarator line="41" name="tiger" type="Tiger">
+    [junit]                   <Initializer>
+    [junit]                     <JNewOp line="41" type="Tiger"/>
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JNewOp>
+    [junit]                   </Initializer>
+    [junit]                 </JVariableDeclarator>
+    [junit]               </VariableDeclarators>
+    [junit]             </JVariableDeclaration>
+    [junit]             <JStatementExpression line="42">
+    [junit]               <JMessageExpression line="42" name="println">
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JMessageExpression line="42" name="scientificName">
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JMessageExpression>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JMessageExpression>
+    [junit]             </JStatementExpression>
+    [junit]             <JStatementExpression line="43">
+    [junit]               <JMessageExpression line="43" name="println">
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JMessageExpression line="43" name="scientificName">
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JMessageExpression>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JMessageExpression>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Arrays.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Arrays" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Classes.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Classes" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JMethodDeclaration line="9" name="message" returnType="String">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="9">
+    [junit]             <JReturnStatement line="10">
+    [junit]               <JBinaryExpression line="10" type="" operator="+">
+    [junit]                 <Lhs>
+    [junit]                   <JBinaryExpression line="10" type="" operator="+">
+    [junit]                     <Lhs>
+    [junit]                       <JFieldSelection line="10" name="a"/>
+    [junit]                       </JFieldSelection>
+    [junit]                     </Lhs>
+    [junit]                     <Rhs>
+    [junit]                       <JLiteralString line="10" type="" value="&quot;, &quot;"/>
+    [junit]                     </Rhs>
+    [junit]                   </JBinaryExpression>
+    [junit]                 </Lhs>
+    [junit]                 <Rhs>
+    [junit]                   <JFieldSelection line="10" name="b"/>
+    [junit]                     <Target>
+    [junit]                       <JNewOp line="10" type="B"/>
+    [junit]                         <Arguments>
+    [junit]                         </Arguments>
+    [junit]                       </JNewOp>
+    [junit]                     </Target>
+    [junit]                   </JFieldSelection>
+    [junit]                 </Rhs>
+    [junit]               </JBinaryExpression>
+    [junit]             </JReturnStatement>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       <JMethodDeclaration line="13" name="main" returnType="void">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]           <JFormalParameter line="13" name="args" type="String[]"/>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="13">
+    [junit]             <JStatementExpression line="14">
+    [junit]               <JMessageExpression line="14" name="println">
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JMessageExpression line="14" name="message">
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JMessageExpression>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JMessageExpression>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]     <JClassDeclaration line="19" name="A" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JFieldDeclaration line="21"/>
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <VariableDeclarators>
+    [junit]           <JVariableDeclarator line="21" name="a" type="String">
+    [junit]             <Initializer>
+    [junit]               <JLiteralString line="21" type="" value="&quot;Hello&quot;"/>
+    [junit]             </Initializer>
+    [junit]           </JVariableDeclarator>
+    [junit]         <VariableDeclarators>
+    [junit]       </JFieldDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]     <JClassDeclaration line="25" name="B" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JFieldDeclaration line="27"/>
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]         </Modifiers>
+    [junit]         <VariableDeclarators>
+    [junit]           <JVariableDeclarator line="27" name="b" type="String">
+    [junit]             <Initializer>
+    [junit]               <JLiteralString line="27" type="" value="&quot;World!&quot;"/>
+    [junit]             </Initializer>
+    [junit]           </JVariableDeclarator>
+    [junit]         <VariableDeclarators>
+    [junit]       </JFieldDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Factorial.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="9" name="Factorial" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/GCD.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.Integer"/>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="11" name="GCD" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/HelloWorld.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="HelloWorld" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JMethodDeclaration line="9" name="message" returnType="String">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="9">
+    [junit]             <JReturnStatement line="10">
+    [junit]               <JLiteralString line="10" type="" value="&quot;Hello, World!&quot;"/>
+    [junit]             </JReturnStatement>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       <JMethodDeclaration line="13" name="main" returnType="void">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]           <JFormalParameter line="13" name="args" type="String[]"/>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="13">
+    [junit]             <JStatementExpression line="14">
+    [junit]               <JMessageExpression line="14" name="println">
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JMessageExpression line="14" name="message">
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JMessageExpression>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JMessageExpression>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Inits.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Inits" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/IntFactorial.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.Integer"/>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="8" name="IntFactorial" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Kast.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="5" name="Kast" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Series.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Series.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.Integer"/>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="8" name="Series" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Strings.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Strings" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.184 sec
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.184 sec
+    [junit] ------------- Standard Output ---------------
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Animalia.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Animal" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="abstract"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JFieldDeclaration line="9"/>
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="protected"/>
+    [junit]         </Modifiers>
+    [junit]         <VariableDeclarators>
+    [junit]           <JVariableDeclarator line="9" name="scientificName" type="String">
+    [junit]           </JVariableDeclarator>
+    [junit]         <VariableDeclarators>
+    [junit]       </JFieldDeclaration>
+    [junit]       <JConstructorDeclaration line="11" name="Animal">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="protected"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]           <JFormalParameter line="11" name="scientificName" type="String"/>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="11">
+    [junit]             <JStatementExpression line="12">
+    [junit]               <JBinaryExpression line="12" type="" operator="=">
+    [junit]                 <Lhs>
+    [junit]                   <JFieldSelection line="12" name="scientificName"/>
+    [junit]                     <Target>
+    [junit]                       <JThis/>
+    [junit]                     </Target>
+    [junit]                   </JFieldSelection>
+    [junit]                 </Lhs>
+    [junit]                 <Rhs>
+    [junit]                   <JVariable name="scientificName"/>
+    [junit]                 </Rhs>
+    [junit]               </JBinaryExpression>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JConstructorDeclaration>
+    [junit]       <JMethodDeclaration line="15" name="scientificName" returnType="String">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="15">
+    [junit]             <JReturnStatement line="16">
+    [junit]               <JVariable name="scientificName"/>
+    [junit]             </JReturnStatement>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]     <JClassDeclaration line="21" name="FruitFly" super="Animal">
+    [junit]       <Modifiers>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JConstructorDeclaration line="23" name="FruitFly">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="23">
+    [junit]             <JStatementExpression line="24">
+    [junit]               <JSuperConstruction line="24"/>
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JLiteralString line="24" type="" value="&quot;Drosophila melanogaster&quot;"/>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JSuperConstruction>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JConstructorDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]     <JClassDeclaration line="29" name="Tiger" super="Animal">
+    [junit]       <Modifiers>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JConstructorDeclaration line="31" name="Tiger">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="31">
+    [junit]             <JStatementExpression line="32">
+    [junit]               <JSuperConstruction line="32"/>
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JLiteralString line="32" type="" value="&quot;Panthera tigris corbetti&quot;"/>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JSuperConstruction>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JConstructorDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]     <JClassDeclaration line="37" name="Animalia" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JMethodDeclaration line="39" name="main" returnType="void">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]           <JFormalParameter line="39" name="args" type="String[]"/>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="39">
+    [junit]             <JVariableDeclaration>
+    [junit]               <Modifiers>
+    [junit]               </Modifiers>
+    [junit]               <VariableDeclarators>
+    [junit]                 <JVariableDeclarator line="40" name="fruitFly" type="FruitFly">
+    [junit]                   <Initializer>
+    [junit]                     <JNewOp line="40" type="FruitFly"/>
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JNewOp>
+    [junit]                   </Initializer>
+    [junit]                 </JVariableDeclarator>
+    [junit]               </VariableDeclarators>
+    [junit]             </JVariableDeclaration>
+    [junit]             <JVariableDeclaration>
+    [junit]               <Modifiers>
+    [junit]               </Modifiers>
+    [junit]               <VariableDeclarators>
+    [junit]                 <JVariableDeclarator line="41" name="tiger" type="Tiger">
+    [junit]                   <Initializer>
+    [junit]                     <JNewOp line="41" type="Tiger"/>
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JNewOp>
+    [junit]                   </Initializer>
+    [junit]                 </JVariableDeclarator>
+    [junit]               </VariableDeclarators>
+    [junit]             </JVariableDeclaration>
+    [junit]             <JStatementExpression line="42">
+    [junit]               <JMessageExpression line="42" name="println">
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JMessageExpression line="42" name="scientificName">
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JMessageExpression>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JMessageExpression>
+    [junit]             </JStatementExpression>
+    [junit]             <JStatementExpression line="43">
+    [junit]               <JMessageExpression line="43" name="println">
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JMessageExpression line="43" name="scientificName">
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JMessageExpression>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JMessageExpression>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Arrays.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Arrays" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Classes.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Classes" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JMethodDeclaration line="9" name="message" returnType="String">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="9">
+    [junit]             <JReturnStatement line="10">
+    [junit]               <JBinaryExpression line="10" type="" operator="+">
+    [junit]                 <Lhs>
+    [junit]                   <JBinaryExpression line="10" type="" operator="+">
+    [junit]                     <Lhs>
+    [junit]                       <JFieldSelection line="10" name="a"/>
+    [junit]                       </JFieldSelection>
+    [junit]                     </Lhs>
+    [junit]                     <Rhs>
+    [junit]                       <JLiteralString line="10" type="" value="&quot;, &quot;"/>
+    [junit]                     </Rhs>
+    [junit]                   </JBinaryExpression>
+    [junit]                 </Lhs>
+    [junit]                 <Rhs>
+    [junit]                   <JFieldSelection line="10" name="b"/>
+    [junit]                     <Target>
+    [junit]                       <JNewOp line="10" type="B"/>
+    [junit]                         <Arguments>
+    [junit]                         </Arguments>
+    [junit]                       </JNewOp>
+    [junit]                     </Target>
+    [junit]                   </JFieldSelection>
+    [junit]                 </Rhs>
+    [junit]               </JBinaryExpression>
+    [junit]             </JReturnStatement>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       <JMethodDeclaration line="13" name="main" returnType="void">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]           <JFormalParameter line="13" name="args" type="String[]"/>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="13">
+    [junit]             <JStatementExpression line="14">
+    [junit]               <JMessageExpression line="14" name="println">
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JMessageExpression line="14" name="message">
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JMessageExpression>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JMessageExpression>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]     <JClassDeclaration line="19" name="A" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JFieldDeclaration line="21"/>
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <VariableDeclarators>
+    [junit]           <JVariableDeclarator line="21" name="a" type="String">
+    [junit]             <Initializer>
+    [junit]               <JLiteralString line="21" type="" value="&quot;Hello&quot;"/>
+    [junit]             </Initializer>
+    [junit]           </JVariableDeclarator>
+    [junit]         <VariableDeclarators>
+    [junit]       </JFieldDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]     <JClassDeclaration line="25" name="B" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JFieldDeclaration line="27"/>
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]         </Modifiers>
+    [junit]         <VariableDeclarators>
+    [junit]           <JVariableDeclarator line="27" name="b" type="String">
+    [junit]             <Initializer>
+    [junit]               <JLiteralString line="27" type="" value="&quot;World!&quot;"/>
+    [junit]             </Initializer>
+    [junit]           </JVariableDeclarator>
+    [junit]         <VariableDeclarators>
+    [junit]       </JFieldDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Factorial.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="9" name="Factorial" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/GCD.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.Integer"/>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="11" name="GCD" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/HelloWorld.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="HelloWorld" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       <JMethodDeclaration line="9" name="message" returnType="String">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="9">
+    [junit]             <JReturnStatement line="10">
+    [junit]               <JLiteralString line="10" type="" value="&quot;Hello, World!&quot;"/>
+    [junit]             </JReturnStatement>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       <JMethodDeclaration line="13" name="main" returnType="void">
+    [junit]         <Modifiers>
+    [junit]           <Modifier name="public"/>
+    [junit]           <Modifier name="static"/>
+    [junit]         </Modifiers>
+    [junit]         <FormalParameters>
+    [junit]           <JFormalParameter line="13" name="args" type="String[]"/>
+    [junit]         </FormalParameters>
+    [junit]         <Body>
+    [junit]           <JBlock line="13">
+    [junit]             <JStatementExpression line="14">
+    [junit]               <JMessageExpression line="14" name="println">
+    [junit]                 <Arguments>
+    [junit]                   <Argument>
+    [junit]                     <JMessageExpression line="14" name="message">
+    [junit]                       <Arguments>
+    [junit]                       </Arguments>
+    [junit]                     </JMessageExpression>
+    [junit]                   </Argument>
+    [junit]                 </Arguments>
+    [junit]               </JMessageExpression>
+    [junit]             </JStatementExpression>
+    [junit]           </JBlock>
+    [junit]         </Body>
+    [junit]       </JMethodDeclaration>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Inits.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Inits" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/IntFactorial.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.Integer"/>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="8" name="IntFactorial" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Kast.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="5" name="Kast" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Series.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Series.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.Integer"/>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="8" name="Series" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] Running javacc parser on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit] <?xml version="1.0" encoding="utf-8"?>
+    [junit] <JCompilationUnit line="3">
+    [junit]   <Source fileName="/courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Strings.java"/>
+    [junit]   <Package name="pass"/>
+    [junit]   <Imports>
+    [junit]     <Import name="java.lang.System"/>
+    [junit]   </Imports>
+    [junit]   <TypeDeclarations>
+    [junit]     <JClassDeclaration line="7" name="Strings" super="java.lang.Object">
+    [junit]       <Modifiers>
+    [junit]         <Modifier name="public"/>
+    [junit]       </Modifiers>
+    [junit]       <ClassBlock>
+    [junit]       </ClassBlock>
+    [junit]     </JClassDeclaration>
+    [junit]   </TypeDeclarations>
+    [junit] </JCompilationUnit>
+    [junit]
+    [junit]
+    [junit] ------------- ---------------- ---------------
+    [junit]
+    [junit] Testcase: testPass took 0.181 sec
+
+BUILD SUCCESSFUL
+Total time: 4 seconds
+jquach93@itserver6:~/cs451/hw4/j--$
+
+BUILD SUCCESSFUL
+Total time: 4 seconds
+jquach93@itserver6:~/cs451/hw4/j--$ ant clean
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw4/j--/build.xml
+
+clean:
+     [echo] Removing generated files and folders...
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/Token.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/TokenMgrError.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/ParseException.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/JavaCCParser.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/JavaCCParserTokenManager.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/JavaCCParserConstants.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/SimpleCharStream.java
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/lib/j--.jar
+   [delete] Deleting: /courses/cs451/s17/wrc/jquach93/hw4/j--/lib/spim.jar
+   [delete] Deleting directory /courses/cs451/s17/wrc/jquach93/hw4/j--/classes
+   
+
+   
+   
+jquach93@itserver6:~/cs451/hw4/j--$ ant testJavaCCScanner
+Buildfile: /courses/cs451/s17/wrc/jquach93/hw4/j--/build.xml
+
+javacc:
+     [echo] Generating JavaCC files...
+   [javacc] Java Compiler Compiler Version 4.0 (Parser Generator)
+   [javacc] (type "javacc" with no arguments for help)
+   [javacc] Reading from file /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/j--.jj . . .
+   [javacc] Warning: Choice conflict in (...)* construct at line 311, column 9.
+   [javacc]          Expansion nested within construct and expansion following construct
+   [javacc]          have common prefixes, one of which is: "."
+   [javacc]          Consider using a lookahead of 2 or more for nested expansion.
+   [javacc] File "TokenMgrError.java" does not exist.  Will create one.
+   [javacc] File "ParseException.java" does not exist.  Will create one.
+   [javacc] File "Token.java" does not exist.  Will create one.
+   [javacc] File "SimpleCharStream.java" does not exist.  Will create one.
+   [javacc] Parser generated with 0 errors and 1 warnings.
+
+compileJavaCC:
+     [echo] Compiling j-- source files...
+    [mkdir] Created dir: /courses/cs451/s17/wrc/jquach93/hw4/j--/classes
+    [javac] Compiling 97 source files to /courses/cs451/s17/wrc/jquach93/hw4/j--/classes
+    [javac] Note: /courses/cs451/s17/wrc/jquach93/hw4/j--/src/jminusminus/JavaCCParser.java uses unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+
+jar:
+     [echo] Bundling class files into jar files...
+      [jar] Building jar: /courses/cs451/s17/wrc/jquach93/hw4/j--/lib/j--.jar
+      [jar] Building MANIFEST-only jar: /courses/cs451/s17/wrc/jquach93/hw4/j--/lib/spim.jar
+
+testJavaCCScanner:
+     [echo] Running JavaCC scanner on the j-- programs...
+    [javac] Compiling 1 source file to /courses/cs451/s17/wrc/jquach93/hw4/j--/classes
+    [junit] Running junit.JavaCCScannerTest
+    [junit] Testsuite: junit.JavaCCScannerTest
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "abstract" = abstract
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Animal
+    [junit] 7    : "{" = {
+    [junit] 9    : "protected" = protected
+    [junit] 9    : <IDENTIFIER> = String
+    [junit] 9    : <IDENTIFIER> = scientificName
+    [junit] 9    : ";" = ;
+    [junit] 11   : "protected" = protected
+    [junit] 11   : <IDENTIFIER> = Animal
+    [junit] 11   : "(" = (
+    [junit] 11   : <IDENTIFIER> = String
+    [junit] 11   : <IDENTIFIER> = scientificName
+    [junit] 11   : ")" = )
+    [junit] 11   : "{" = {
+    [junit] 12   : "this" = this
+    [junit] 12   : "." = .
+    [junit] 12   : <IDENTIFIER> = scientificName
+    [junit] 12   : "=" = =
+    [junit] 12   : <IDENTIFIER> = scientificName
+    [junit] 12   : ";" = ;
+    [junit] 13   : "}" = }
+    [junit] 15   : "public" = public
+    [junit] 15   : <IDENTIFIER> = String
+    [junit] 15   : <IDENTIFIER> = scientificName
+    [junit] 15   : "(" = (
+    [junit] 15   : ")" = )
+    [junit] 15   : "{" = {
+    [junit] 16   : "return" = return
+    [junit] 16   : <IDENTIFIER> = scientificName
+    [junit] 16   : ";" = ;
+    [junit] 17   : "}" = }
+    [junit] 19   : "}" = }
+    [junit] 21   : "class" = class
+    [junit] 21   : <IDENTIFIER> = FruitFly
+    [junit] 21   : "extends" = extends
+    [junit] 21   : <IDENTIFIER> = Animal
+    [junit] 21   : "{" = {
+    [junit] 23   : "public" = public
+    [junit] 23   : <IDENTIFIER> = FruitFly
+    [junit] 23   : "(" = (
+    [junit] 23   : ")" = )
+    [junit] 23   : "{" = {
+    [junit] 24   : "super" = super
+    [junit] 24   : "(" = (
+    [junit] 24   : <STRING_LITERAL> = "Drosophila melanogaster"
+    [junit] 24   : ")" = )
+    [junit] 24   : ";" = ;
+    [junit] 25   : "}" = }
+    [junit] 27   : "}" = }
+    [junit] 29   : "class" = class
+    [junit] 29   : <IDENTIFIER> = Tiger
+    [junit] 29   : "extends" = extends
+    [junit] 29   : <IDENTIFIER> = Animal
+    [junit] 29   : "{" = {
+    [junit] 31   : "public" = public
+    [junit] 31   : <IDENTIFIER> = Tiger
+    [junit] 31   : "(" = (
+    [junit] 31   : ")" = )
+    [junit] 31   : "{" = {
+    [junit] 32   : "super" = super
+    [junit] 32   : "(" = (
+    [junit] 32   : <STRING_LITERAL> = "Panthera tigris corbetti"
+    [junit] 32   : ")" = )
+    [junit] 32   : ";" = ;
+    [junit] 33   : "}" = }
+    [junit] 35   : "}" = }
+    [junit] 37   : "public" = public
+    [junit] 37   : "class" = class
+    [junit] 37   : <IDENTIFIER> = Animalia
+    [junit] 37   : "{" = {
+    [junit] 39   : "public" = public
+    [junit] 39   : "static" = static
+    [junit] 39   : "void" = void
+    [junit] 39   : <IDENTIFIER> = main
+    [junit] 39   : "(" = (
+    [junit] 39   : <IDENTIFIER> = String
+    [junit] 39   : "[" = [
+    [junit] 39   : "]" = ]
+    [junit] 39   : <IDENTIFIER> = args
+    [junit] 39   : ")" = )
+    [junit] 39   : "{" = {
+    [junit] 40   : <IDENTIFIER> = FruitFly
+    [junit] 40   : <IDENTIFIER> = fruitFly
+    [junit] 40   : "=" = =
+    [junit] 40   : "new" = new
+    [junit] 40   : <IDENTIFIER> = FruitFly
+    [junit] 40   : "(" = (
+    [junit] 40   : ")" = )
+    [junit] 40   : ";" = ;
+    [junit] 41   : <IDENTIFIER> = Tiger
+    [junit] 41   : <IDENTIFIER> = tiger
+    [junit] 41   : "=" = =
+    [junit] 41   : "new" = new
+    [junit] 41   : <IDENTIFIER> = Tiger
+    [junit] 41   : "(" = (
+    [junit] 41   : ")" = )
+    [junit] 41   : ";" = ;
+    [junit] 42   : <IDENTIFIER> = System
+    [junit] 42   : "." = .
+    [junit] 42   : <IDENTIFIER> = out
+    [junit] 42   : "." = .
+    [junit] 42   : <IDENTIFIER> = println
+    [junit] 42   : "(" = (
+    [junit] 42   : <IDENTIFIER> = fruitFly
+    [junit] 42   : "." = .
+    [junit] 42   : <IDENTIFIER> = scientificName
+    [junit] 42   : "(" = (
+    [junit] 42   : ")" = )
+    [junit] 42   : ")" = )
+    [junit] 42   : ";" = ;
+    [junit] 43   : <IDENTIFIER> = System
+    [junit] 43   : "." = .
+    [junit] 43   : <IDENTIFIER> = out
+    [junit] 43   : "." = .
+    [junit] 43   : <IDENTIFIER> = println
+    [junit] 43   : "(" = (
+    [junit] 43   : <IDENTIFIER> = tiger
+    [junit] 43   : "." = .
+    [junit] 43   : <IDENTIFIER> = scientificName
+    [junit] 43   : "(" = (
+    [junit] 43   : ")" = )
+    [junit] 43   : ")" = )
+    [junit] 43   : ";" = ;
+    [junit] 44   : "}" = }
+    [junit] 46   : "}" = }
+    [junit] 46   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Arrays
+    [junit] 7    : "{" = {
+    [junit] 22   : "}" = }
+    [junit] 22   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Classes
+    [junit] 7    : "{" = {
+    [junit] 9    : "public" = public
+    [junit] 9    : "static" = static
+    [junit] 9    : <IDENTIFIER> = String
+    [junit] 9    : <IDENTIFIER> = message
+    [junit] 9    : "(" = (
+    [junit] 9    : ")" = )
+    [junit] 9    : "{" = {
+    [junit] 10   : "return" = return
+    [junit] 10   : <IDENTIFIER> = A
+    [junit] 10   : "." = .
+    [junit] 10   : <IDENTIFIER> = a
+    [junit] 10   : "+" = +
+    [junit] 10   : <STRING_LITERAL> = ", "
+    [junit] 10   : "+" = +
+    [junit] 10   : "(" = (
+    [junit] 10   : "new" = new
+    [junit] 10   : <IDENTIFIER> = B
+    [junit] 10   : "(" = (
+    [junit] 10   : ")" = )
+    [junit] 10   : ")" = )
+    [junit] 10   : "." = .
+    [junit] 10   : <IDENTIFIER> = b
+    [junit] 10   : ";" = ;
+    [junit] 11   : "}" = }
+    [junit] 13   : "public" = public
+    [junit] 13   : "static" = static
+    [junit] 13   : "void" = void
+    [junit] 13   : <IDENTIFIER> = main
+    [junit] 13   : "(" = (
+    [junit] 13   : <IDENTIFIER> = String
+    [junit] 13   : "[" = [
+    [junit] 13   : "]" = ]
+    [junit] 13   : <IDENTIFIER> = args
+    [junit] 13   : ")" = )
+    [junit] 13   : "{" = {
+    [junit] 14   : <IDENTIFIER> = System
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = out
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = println
+    [junit] 14   : "(" = (
+    [junit] 14   : <IDENTIFIER> = Classes
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = message
+    [junit] 14   : "(" = (
+    [junit] 14   : ")" = )
+    [junit] 14   : ")" = )
+    [junit] 14   : ";" = ;
+    [junit] 15   : "}" = }
+    [junit] 17   : "}" = }
+    [junit] 19   : "class" = class
+    [junit] 19   : <IDENTIFIER> = A
+    [junit] 19   : "{" = {
+    [junit] 21   : "public" = public
+    [junit] 21   : "static" = static
+    [junit] 21   : <IDENTIFIER> = String
+    [junit] 21   : <IDENTIFIER> = a
+    [junit] 21   : "=" = =
+    [junit] 21   : <STRING_LITERAL> = "Hello"
+    [junit] 21   : ";" = ;
+    [junit] 23   : "}" = }
+    [junit] 25   : "class" = class
+    [junit] 25   : <IDENTIFIER> = B
+    [junit] 25   : "{" = {
+    [junit] 27   : "public" = public
+    [junit] 27   : <IDENTIFIER> = String
+    [junit] 27   : <IDENTIFIER> = b
+    [junit] 27   : "=" = =
+    [junit] 27   : <STRING_LITERAL> = "World!"
+    [junit] 27   : ";" = ;
+    [junit] 29   : "}" = }
+    [junit] 29   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 9    : "public" = public
+    [junit] 9    : "class" = class
+    [junit] 9    : <IDENTIFIER> = Factorial
+    [junit] 9    : "{" = {
+    [junit] 27   : "}" = }
+    [junit] 27   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = Integer
+    [junit] 5    : ";" = ;
+    [junit] 6    : "import" = import
+    [junit] 6    : <IDENTIFIER> = java
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = lang
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = System
+    [junit] 6    : ";" = ;
+    [junit] 11   : "public" = public
+    [junit] 11   : "class" = class
+    [junit] 11   : <IDENTIFIER> = GCD
+    [junit] 11   : "{" = {
+    [junit] 47   : "}" = }
+    [junit] 47   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = HelloWorld
+    [junit] 7    : "{" = {
+    [junit] 9    : "public" = public
+    [junit] 9    : "static" = static
+    [junit] 9    : <IDENTIFIER> = String
+    [junit] 9    : <IDENTIFIER> = message
+    [junit] 9    : "(" = (
+    [junit] 9    : ")" = )
+    [junit] 9    : "{" = {
+    [junit] 10   : "return" = return
+    [junit] 10   : <STRING_LITERAL> = "Hello, World!"
+    [junit] 10   : ";" = ;
+    [junit] 11   : "}" = }
+    [junit] 13   : "public" = public
+    [junit] 13   : "static" = static
+    [junit] 13   : "void" = void
+    [junit] 13   : <IDENTIFIER> = main
+    [junit] 13   : "(" = (
+    [junit] 13   : <IDENTIFIER> = String
+    [junit] 13   : "[" = [
+    [junit] 13   : "]" = ]
+    [junit] 13   : <IDENTIFIER> = args
+    [junit] 13   : ")" = )
+    [junit] 13   : "{" = {
+    [junit] 14   : <IDENTIFIER> = System
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = out
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = println
+    [junit] 14   : "(" = (
+    [junit] 14   : <IDENTIFIER> = HelloWorld
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = message
+    [junit] 14   : "(" = (
+    [junit] 14   : ")" = )
+    [junit] 14   : ")" = )
+    [junit] 14   : ";" = ;
+    [junit] 15   : "}" = }
+    [junit] 17   : "}" = }
+    [junit] 17   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Inits
+    [junit] 7    : "{" = {
+    [junit] 22   : "}" = }
+    [junit] 22   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = Integer
+    [junit] 5    : ";" = ;
+    [junit] 6    : "import" = import
+    [junit] 6    : <IDENTIFIER> = java
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = lang
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = System
+    [junit] 6    : ";" = ;
+    [junit] 8    : "public" = public
+    [junit] 8    : "class" = class
+    [junit] 8    : <IDENTIFIER> = IntFactorial
+    [junit] 8    : "{" = {
+    [junit] 24   : "}" = }
+    [junit] 24   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "public" = public
+    [junit] 5    : "class" = class
+    [junit] 5    : <IDENTIFIER> = Kast
+    [junit] 5    : "{" = {
+    [junit] 13   : "}" = }
+    [junit] 13   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Series.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = Integer
+    [junit] 5    : ";" = ;
+    [junit] 6    : "import" = import
+    [junit] 6    : <IDENTIFIER> = java
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = lang
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = System
+    [junit] 6    : ";" = ;
+    [junit] 8    : "public" = public
+    [junit] 8    : "class" = class
+    [junit] 8    : <IDENTIFIER> = Series
+    [junit] 8    : "{" = {
+    [junit] 53   : "}" = }
+    [junit] 53   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Strings
+    [junit] 7    : "{" = {
+    [junit] 28   : "}" = }
+    [junit] 28   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.069 sec
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.069 sec
+    [junit] ------------- Standard Output ---------------
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Animalia.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "abstract" = abstract
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Animal
+    [junit] 7    : "{" = {
+    [junit] 9    : "protected" = protected
+    [junit] 9    : <IDENTIFIER> = String
+    [junit] 9    : <IDENTIFIER> = scientificName
+    [junit] 9    : ";" = ;
+    [junit] 11   : "protected" = protected
+    [junit] 11   : <IDENTIFIER> = Animal
+    [junit] 11   : "(" = (
+    [junit] 11   : <IDENTIFIER> = String
+    [junit] 11   : <IDENTIFIER> = scientificName
+    [junit] 11   : ")" = )
+    [junit] 11   : "{" = {
+    [junit] 12   : "this" = this
+    [junit] 12   : "." = .
+    [junit] 12   : <IDENTIFIER> = scientificName
+    [junit] 12   : "=" = =
+    [junit] 12   : <IDENTIFIER> = scientificName
+    [junit] 12   : ";" = ;
+    [junit] 13   : "}" = }
+    [junit] 15   : "public" = public
+    [junit] 15   : <IDENTIFIER> = String
+    [junit] 15   : <IDENTIFIER> = scientificName
+    [junit] 15   : "(" = (
+    [junit] 15   : ")" = )
+    [junit] 15   : "{" = {
+    [junit] 16   : "return" = return
+    [junit] 16   : <IDENTIFIER> = scientificName
+    [junit] 16   : ";" = ;
+    [junit] 17   : "}" = }
+    [junit] 19   : "}" = }
+    [junit] 21   : "class" = class
+    [junit] 21   : <IDENTIFIER> = FruitFly
+    [junit] 21   : "extends" = extends
+    [junit] 21   : <IDENTIFIER> = Animal
+    [junit] 21   : "{" = {
+    [junit] 23   : "public" = public
+    [junit] 23   : <IDENTIFIER> = FruitFly
+    [junit] 23   : "(" = (
+    [junit] 23   : ")" = )
+    [junit] 23   : "{" = {
+    [junit] 24   : "super" = super
+    [junit] 24   : "(" = (
+    [junit] 24   : <STRING_LITERAL> = "Drosophila melanogaster"
+    [junit] 24   : ")" = )
+    [junit] 24   : ";" = ;
+    [junit] 25   : "}" = }
+    [junit] 27   : "}" = }
+    [junit] 29   : "class" = class
+    [junit] 29   : <IDENTIFIER> = Tiger
+    [junit] 29   : "extends" = extends
+    [junit] 29   : <IDENTIFIER> = Animal
+    [junit] 29   : "{" = {
+    [junit] 31   : "public" = public
+    [junit] 31   : <IDENTIFIER> = Tiger
+    [junit] 31   : "(" = (
+    [junit] 31   : ")" = )
+    [junit] 31   : "{" = {
+    [junit] 32   : "super" = super
+    [junit] 32   : "(" = (
+    [junit] 32   : <STRING_LITERAL> = "Panthera tigris corbetti"
+    [junit] 32   : ")" = )
+    [junit] 32   : ";" = ;
+    [junit] 33   : "}" = }
+    [junit] 35   : "}" = }
+    [junit] 37   : "public" = public
+    [junit] 37   : "class" = class
+    [junit] 37   : <IDENTIFIER> = Animalia
+    [junit] 37   : "{" = {
+    [junit] 39   : "public" = public
+    [junit] 39   : "static" = static
+    [junit] 39   : "void" = void
+    [junit] 39   : <IDENTIFIER> = main
+    [junit] 39   : "(" = (
+    [junit] 39   : <IDENTIFIER> = String
+    [junit] 39   : "[" = [
+    [junit] 39   : "]" = ]
+    [junit] 39   : <IDENTIFIER> = args
+    [junit] 39   : ")" = )
+    [junit] 39   : "{" = {
+    [junit] 40   : <IDENTIFIER> = FruitFly
+    [junit] 40   : <IDENTIFIER> = fruitFly
+    [junit] 40   : "=" = =
+    [junit] 40   : "new" = new
+    [junit] 40   : <IDENTIFIER> = FruitFly
+    [junit] 40   : "(" = (
+    [junit] 40   : ")" = )
+    [junit] 40   : ";" = ;
+    [junit] 41   : <IDENTIFIER> = Tiger
+    [junit] 41   : <IDENTIFIER> = tiger
+    [junit] 41   : "=" = =
+    [junit] 41   : "new" = new
+    [junit] 41   : <IDENTIFIER> = Tiger
+    [junit] 41   : "(" = (
+    [junit] 41   : ")" = )
+    [junit] 41   : ";" = ;
+    [junit] 42   : <IDENTIFIER> = System
+    [junit] 42   : "." = .
+    [junit] 42   : <IDENTIFIER> = out
+    [junit] 42   : "." = .
+    [junit] 42   : <IDENTIFIER> = println
+    [junit] 42   : "(" = (
+    [junit] 42   : <IDENTIFIER> = fruitFly
+    [junit] 42   : "." = .
+    [junit] 42   : <IDENTIFIER> = scientificName
+    [junit] 42   : "(" = (
+    [junit] 42   : ")" = )
+    [junit] 42   : ")" = )
+    [junit] 42   : ";" = ;
+    [junit] 43   : <IDENTIFIER> = System
+    [junit] 43   : "." = .
+    [junit] 43   : <IDENTIFIER> = out
+    [junit] 43   : "." = .
+    [junit] 43   : <IDENTIFIER> = println
+    [junit] 43   : "(" = (
+    [junit] 43   : <IDENTIFIER> = tiger
+    [junit] 43   : "." = .
+    [junit] 43   : <IDENTIFIER> = scientificName
+    [junit] 43   : "(" = (
+    [junit] 43   : ")" = )
+    [junit] 43   : ")" = )
+    [junit] 43   : ";" = ;
+    [junit] 44   : "}" = }
+    [junit] 46   : "}" = }
+    [junit] 46   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Arrays.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Arrays
+    [junit] 7    : "{" = {
+    [junit] 22   : "}" = }
+    [junit] 22   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Classes.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Classes
+    [junit] 7    : "{" = {
+    [junit] 9    : "public" = public
+    [junit] 9    : "static" = static
+    [junit] 9    : <IDENTIFIER> = String
+    [junit] 9    : <IDENTIFIER> = message
+    [junit] 9    : "(" = (
+    [junit] 9    : ")" = )
+    [junit] 9    : "{" = {
+    [junit] 10   : "return" = return
+    [junit] 10   : <IDENTIFIER> = A
+    [junit] 10   : "." = .
+    [junit] 10   : <IDENTIFIER> = a
+    [junit] 10   : "+" = +
+    [junit] 10   : <STRING_LITERAL> = ", "
+    [junit] 10   : "+" = +
+    [junit] 10   : "(" = (
+    [junit] 10   : "new" = new
+    [junit] 10   : <IDENTIFIER> = B
+    [junit] 10   : "(" = (
+    [junit] 10   : ")" = )
+    [junit] 10   : ")" = )
+    [junit] 10   : "." = .
+    [junit] 10   : <IDENTIFIER> = b
+    [junit] 10   : ";" = ;
+    [junit] 11   : "}" = }
+    [junit] 13   : "public" = public
+    [junit] 13   : "static" = static
+    [junit] 13   : "void" = void
+    [junit] 13   : <IDENTIFIER> = main
+    [junit] 13   : "(" = (
+    [junit] 13   : <IDENTIFIER> = String
+    [junit] 13   : "[" = [
+    [junit] 13   : "]" = ]
+    [junit] 13   : <IDENTIFIER> = args
+    [junit] 13   : ")" = )
+    [junit] 13   : "{" = {
+    [junit] 14   : <IDENTIFIER> = System
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = out
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = println
+    [junit] 14   : "(" = (
+    [junit] 14   : <IDENTIFIER> = Classes
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = message
+    [junit] 14   : "(" = (
+    [junit] 14   : ")" = )
+    [junit] 14   : ")" = )
+    [junit] 14   : ";" = ;
+    [junit] 15   : "}" = }
+    [junit] 17   : "}" = }
+    [junit] 19   : "class" = class
+    [junit] 19   : <IDENTIFIER> = A
+    [junit] 19   : "{" = {
+    [junit] 21   : "public" = public
+    [junit] 21   : "static" = static
+    [junit] 21   : <IDENTIFIER> = String
+    [junit] 21   : <IDENTIFIER> = a
+    [junit] 21   : "=" = =
+    [junit] 21   : <STRING_LITERAL> = "Hello"
+    [junit] 21   : ";" = ;
+    [junit] 23   : "}" = }
+    [junit] 25   : "class" = class
+    [junit] 25   : <IDENTIFIER> = B
+    [junit] 25   : "{" = {
+    [junit] 27   : "public" = public
+    [junit] 27   : <IDENTIFIER> = String
+    [junit] 27   : <IDENTIFIER> = b
+    [junit] 27   : "=" = =
+    [junit] 27   : <STRING_LITERAL> = "World!"
+    [junit] 27   : ";" = ;
+    [junit] 29   : "}" = }
+    [junit] 29   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Factorial.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 9    : "public" = public
+    [junit] 9    : "class" = class
+    [junit] 9    : <IDENTIFIER> = Factorial
+    [junit] 9    : "{" = {
+    [junit] 27   : "}" = }
+    [junit] 27   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/GCD.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = Integer
+    [junit] 5    : ";" = ;
+    [junit] 6    : "import" = import
+    [junit] 6    : <IDENTIFIER> = java
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = lang
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = System
+    [junit] 6    : ";" = ;
+    [junit] 11   : "public" = public
+    [junit] 11   : "class" = class
+    [junit] 11   : <IDENTIFIER> = GCD
+    [junit] 11   : "{" = {
+    [junit] 47   : "}" = }
+    [junit] 47   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/HelloWorld.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = HelloWorld
+    [junit] 7    : "{" = {
+    [junit] 9    : "public" = public
+    [junit] 9    : "static" = static
+    [junit] 9    : <IDENTIFIER> = String
+    [junit] 9    : <IDENTIFIER> = message
+    [junit] 9    : "(" = (
+    [junit] 9    : ")" = )
+    [junit] 9    : "{" = {
+    [junit] 10   : "return" = return
+    [junit] 10   : <STRING_LITERAL> = "Hello, World!"
+    [junit] 10   : ";" = ;
+    [junit] 11   : "}" = }
+    [junit] 13   : "public" = public
+    [junit] 13   : "static" = static
+    [junit] 13   : "void" = void
+    [junit] 13   : <IDENTIFIER> = main
+    [junit] 13   : "(" = (
+    [junit] 13   : <IDENTIFIER> = String
+    [junit] 13   : "[" = [
+    [junit] 13   : "]" = ]
+    [junit] 13   : <IDENTIFIER> = args
+    [junit] 13   : ")" = )
+    [junit] 13   : "{" = {
+    [junit] 14   : <IDENTIFIER> = System
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = out
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = println
+    [junit] 14   : "(" = (
+    [junit] 14   : <IDENTIFIER> = HelloWorld
+    [junit] 14   : "." = .
+    [junit] 14   : <IDENTIFIER> = message
+    [junit] 14   : "(" = (
+    [junit] 14   : ")" = )
+    [junit] 14   : ")" = )
+    [junit] 14   : ";" = ;
+    [junit] 15   : "}" = }
+    [junit] 17   : "}" = }
+    [junit] 17   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Inits.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Inits
+    [junit] 7    : "{" = {
+    [junit] 22   : "}" = }
+    [junit] 22   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/IntFactorial.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = Integer
+    [junit] 5    : ";" = ;
+    [junit] 6    : "import" = import
+    [junit] 6    : <IDENTIFIER> = java
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = lang
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = System
+    [junit] 6    : ";" = ;
+    [junit] 8    : "public" = public
+    [junit] 8    : "class" = class
+    [junit] 8    : <IDENTIFIER> = IntFactorial
+    [junit] 8    : "{" = {
+    [junit] 24   : "}" = }
+    [junit] 24   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Kast.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "public" = public
+    [junit] 5    : "class" = class
+    [junit] 5    : <IDENTIFIER> = Kast
+    [junit] 5    : "{" = {
+    [junit] 13   : "}" = }
+    [junit] 13   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Series.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = Integer
+    [junit] 5    : ";" = ;
+    [junit] 6    : "import" = import
+    [junit] 6    : <IDENTIFIER> = java
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = lang
+    [junit] 6    : "." = .
+    [junit] 6    : <IDENTIFIER> = System
+    [junit] 6    : ";" = ;
+    [junit] 8    : "public" = public
+    [junit] 8    : "class" = class
+    [junit] 8    : <IDENTIFIER> = Series
+    [junit] 8    : "{" = {
+    [junit] 53   : "}" = }
+    [junit] 53   : <EOF> =
+    [junit]
+    [junit]
+    [junit] Running javacc scanner on /courses/cs451/s17/wrc/jquach93/hw4/j--/tests/pass/Strings.java ...
+    [junit]
+    [junit] 3    : "package" = package
+    [junit] 3    : <IDENTIFIER> = pass
+    [junit] 3    : ";" = ;
+    [junit] 5    : "import" = import
+    [junit] 5    : <IDENTIFIER> = java
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = lang
+    [junit] 5    : "." = .
+    [junit] 5    : <IDENTIFIER> = System
+    [junit] 5    : ";" = ;
+    [junit] 7    : "public" = public
+    [junit] 7    : "class" = class
+    [junit] 7    : <IDENTIFIER> = Strings
+    [junit] 7    : "{" = {
+    [junit] 28   : "}" = }
+    [junit] 28   : <EOF> =
+    [junit]
+    [junit]
+    [junit] ------------- ---------------- ---------------
+    [junit]
+    [junit] Testcase: testPass took 0.066 sec
+
+BUILD SUCCESSFUL
+Total time: 4 seconds
+jquach93@itserver6:~/cs451/hw4/j--$
